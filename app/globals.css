@@ -197,7 +197,7 @@ button {
 }
 
 .dashboard-page .welcome-header-container {
-    margin-top: -0.625rem; /* Moves it down by 10px strictly on Dashboard page */
+    margin-top: 1.25rem; /* Moved down by 30px from previous -0.625rem */
 }
 
 .dashboard-logo-large {
