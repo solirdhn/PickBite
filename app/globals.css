@@ -296,6 +296,28 @@ button {
     border-radius: 4px;
 }
 
+.line-height-tight {
+    line-height: 1.25;
+}
+
+.btn-icon-xs {
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    background: transparent;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+}
+
+.btn-icon-xs:hover {
+    background: rgba(235, 87, 87, 0.1);
+}
+
 .welcome-header-container {
     display: flex;
     align-items: center;

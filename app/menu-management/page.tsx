@@ -15,11 +15,13 @@ interface MenuItem {
 
 export default function MenuPage() {
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
-  const [activeTab, setActiveTab] = useState("Popular");
+  const [activeTab, setActiveTab] = useState("All");
   const [search, setSearch] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isMoreOpen, setIsMoreOpen] = useState(false);
   const [editItem, setEditItem] = useState<MenuItem | null>(null);
+  const [basket, setBasket] = useState<Record<number, { item: MenuItem; quantity: number }>>({});
+  const [showBasket, setShowBasket] = useState(false);
 
   useEffect(() => {
     const savedMenu = JSON.parse(localStorage.getItem("pb_menu_data") || "[]");
@@ -94,6 +96,33 @@ export default function MenuPage() {
     }
   };
 
+  const addToBasket = (item: MenuItem) => {
+    setBasket((prev) => {
+      const existing = prev[item.id];
+      return {
+        ...prev,
+        [item.id]: {
+          item,
+          quantity: existing ? existing.quantity + 1 : 1,
+        },
+      };
+    });
+    setShowBasket(true);
+  };
+
+  const removeFromBasket = (id: number) => {
+    setBasket((prev) => {
+      const newBasket = { ...prev };
+      delete newBasket[id];
+      return newBasket;
+    });
+  };
+
+  const totalAmount = Object.values(basket).reduce(
+    (sum, entry) => sum + entry.item.price * entry.quantity,
+    0
+  );
+
   const filteredMenu = menuItems.filter((item) => {
     const matchesCategory =
       activeTab === "Popular" ? item.isPopular :
@@ -103,8 +132,8 @@ export default function MenuPage() {
     return matchesCategory && matchesSearch;
   });
 
-  const categories = ["Popular", "Beverages", "Main Course", "Dessert"];
-  const moreCategories = ["Breakfast", "All"];
+  const categories = ["All", "Popular", "Beverages", "Main Course", "Dessert"];
+  const moreCategories = ["Breakfast"];
 
   return (
     <main className="main-content menu-page">
@@ -164,6 +193,9 @@ export default function MenuPage() {
                   <div className="food-footer">
                     <span className="price">RM {parseFloat(item.price.toString()).toFixed(2)}</span>
                     <div className="actions">
+                      <button className="btn-icon" onClick={() => addToBasket(item)} aria-label="Quick Order" title="Add to Order (Take Away)">
+                        <i className="fas fa-shopping-basket"></i>
+                      </button>
                       <button className="btn-icon" onClick={() => { setEditItem(item); setIsModalOpen(true); }} aria-label="Edit Item" title="Edit Item"><i className="fas fa-edit"></i></button>
                       <button className="btn-icon btn-delete" onClick={() => deleteItem(item.id)} aria-label="Delete Item" title="Delete Item"><i className="fas fa-trash"></i></button>
                     </div>
@@ -174,37 +206,95 @@ export default function MenuPage() {
           </div>
         </div>
         <aside className="menu-sidebar-right">
-          <h4 className="sidebar-title">Categories</h4>
-          <div className="category-vertical-tabs">
-            {categories.map((cat) => (
-              <div
-                key={cat}
-                className={`category-vertical-tab ${activeTab === cat ? "active" : ""}`}
-                onClick={() => { setActiveTab(cat); setIsMoreOpen(false); }}
-              >
-                {cat}
-              </div>
-            ))}
-            <div className="more-menu-container w-full">
-              <button className="btn-more w-full" onClick={() => setIsMoreOpen(!isMoreOpen)}>
-                More <i className={`fas fa-chevron-${isMoreOpen ? "up" : "down"}`}></i>
-              </button>
-              <div className={`more-dropdown vertical ${isMoreOpen ? "show" : ""}`}>
-                {moreCategories.map((cat) => (
-                  <button
+          {!showBasket ? (
+            <>
+              <h4 className="sidebar-title">Categories</h4>
+              <div className="category-vertical-tabs">
+                {categories.map((cat) => (
+                  <div
                     key={cat}
-                    className="dropdown-item"
-                    onClick={() => {
-                      setActiveTab(cat);
-                      setIsMoreOpen(false);
-                    }}
+                    className={`category-vertical-tab ${activeTab === cat ? "active" : ""}`}
+                    onClick={() => { setActiveTab(cat); setIsMoreOpen(false); }}
                   >
                     {cat}
-                  </button>
+                  </div>
                 ))}
+                <div className="more-menu-container w-full">
+                  <button className="btn-more w-full" onClick={() => setIsMoreOpen(!isMoreOpen)}>
+                    More <i className={`fas fa-chevron-${isMoreOpen ? "up" : "down"}`}></i>
+                  </button>
+                  <div className={`more-dropdown vertical ${isMoreOpen ? "show" : ""}`}>
+                    {moreCategories.map((cat) => (
+                      <button
+                        key={cat}
+                        className="dropdown-item"
+                        onClick={() => {
+                          setActiveTab(cat);
+                          setIsMoreOpen(false);
+                        }}
+                      >
+                        {cat}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </>
+          ) : (
+            <div className="basket-view p-05">
+              <div className="flex flex-between flex-align-center mb-1 pb-05 border-bottom">
+                <h4 className="sidebar-title m-0 fs-md">Order Basket</h4>
+                <button className="btn-icon btn-ghost p-0" onClick={() => setShowBasket(false)} title="Close Basket">
+                  <i className="fas fa-times fs-sm"></i>
+                </button>
+              </div>
+              
+              <div className="basket-items mb-15">
+                {Object.values(basket).length === 0 ? (
+                  <p className="text-center text-muted py-2 fs-sm">Basket is empty</p>
+                ) : (
+                  <div className="basket-list">
+                    {Object.values(basket).map((entry) => (
+                      <div key={entry.item.id} className="basket-item flex flex-between mb-05 pb-05 border-bottom flex-align-start">
+                        <div className="basket-item-info flex-1 pr-05">
+                          <div className="fs-sm fw-semibold text-dark line-height-tight">{entry.item.name}</div>
+                          <div className="text-muted fs-xs">Qty: {entry.quantity}</div>
+                        </div>
+                        <div className="basket-item-actions flex flex-align-center gap-05">
+                          <span className="fs-xs fw-bold">RM {(entry.item.price * entry.quantity).toFixed(2)}</span>
+                          <button 
+                            className="btn-icon-xs text-danger" 
+                            onClick={() => removeFromBasket(entry.item.id)} 
+                            title="Remove"
+                          >
+                            <i className="fas fa-trash fs-xs"></i>
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              <div className="basket-summary border-top pt-1">
+                <div className="flex flex-between fw-bold fs-md mb-1">
+                  <span>Total</span>
+                  <span className="text-primary">RM {totalAmount.toFixed(2)}</span>
+                </div>
+                <div className="flex flex-column gap-05">
+                  <button className="btn-primary w-full py-05 fs-sm" onClick={() => alert("Order Placed!")} disabled={Object.values(basket).length === 0}>
+                    Place Order
+                  </button>
+                  <button className="btn-primary btn-ghost w-full py-05 fs-xs" onClick={() => setBasket({})} disabled={Object.values(basket).length === 0}>
+                    Clear Basket
+                  </button>
+                  <button className="btn-text w-full fs-xs mt-05 flex-align-center justify-center gap-02" onClick={() => setShowBasket(false)}>
+                    <i className="fas fa-arrow-left"></i> Categories
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
+          )}
         </aside>
       </div>
 
