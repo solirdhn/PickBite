@@ -217,7 +217,7 @@ button {
     display: flex;
     flex-direction: column;
     margin-bottom: 0;
-    padding-top: 1.5rem; /* Moves text lower down to align better with logo */
+    padding-top: 2.75rem; /* Increased (+20px) to move info lower as requested */
     max-width: 800px; /* Prevents stretching and closes horizontal gap */
 }
 
