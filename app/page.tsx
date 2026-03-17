@@ -78,8 +78,8 @@ export default function Dashboard() {
             <i className="fas fa-shopping-bag"></i>
           </div>
           <div className="stat-content-modern">
-            <div className="stat-value-modern">{stats.totalOrders}</div>
             <div className="stat-label-modern">Total Orders</div>
+            <div className="stat-value-modern">{stats.totalOrders}</div>
           </div>
         </div>
 
@@ -88,8 +88,8 @@ export default function Dashboard() {
             <i className="fas fa-coins"></i>
           </div>
           <div className="stat-content-modern">
-            <div className="stat-value-modern">{stats.totalRevenue}</div>
             <div className="stat-label-modern">Today&apos;s Revenue</div>
+            <div className="stat-value-modern">{stats.totalRevenue}</div>
           </div>
         </div>
 
@@ -98,8 +98,8 @@ export default function Dashboard() {
             <i className="fas fa-clock"></i>
           </div>
           <div className="stat-content-modern">
-            <div className="stat-value-modern">{stats.pendingOrders}</div>
             <div className="stat-label-modern">Pending Orders</div>
+            <div className="stat-value-modern">{stats.pendingOrders}</div>
           </div>
         </div>
 
@@ -108,8 +108,8 @@ export default function Dashboard() {
             <i className="fas fa-utensils"></i>
           </div>
           <div className="stat-content-modern">
-            <div className="stat-value-modern">{stats.totalMenuItems}</div>
             <div className="stat-label-modern">Menu Items</div>
+            <div className="stat-value-modern">{stats.totalMenuItems}</div>
           </div>
         </div>
       </div>
@@ -120,50 +120,50 @@ export default function Dashboard() {
           {recentOrders.length === 0 ? (
             <p className="text-muted">No orders yet.</p>
           ) : (
-            <table className="w-full border-collapse">
-              <thead>
-                <tr className="text-center border-bottom text-muted fs-sm">
-                  <th className="p-2">ID</th>
-                  <th className="p-2">Customer</th>
-                  <th className="p-2">Status</th>
-                  <th className="p-2">Total</th>
-                </tr>
-              </thead>
-              <tbody>
-                {recentOrders.map((order) => (
-                  <tr key={order.id} className="border-bottom">
-                    <td className="p-2 fw-semibold">{order.id}</td>
-                    <td className="p-2">{order.customer}</td>
-                    <td className="p-2">
-                      <span className="fs-xs fw-bold text-primary">
-                        {order.status}
-                      </span>
-                    </td>
-                    <td className="p-2 fw-bold">
-                      RM {parseFloat(order.total).toFixed(2)}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
-        </div>
-        <div className="card">
-          <h3 className="mb-15">Popular Items</h3>
-          {popularItems.length === 0 ? (
-            <p className="text-muted">Add menu items first.</p>
-          ) : (
-            <div className="flex-column gap-1">
-              {popularItems.map((item, index) => (
-                <div key={index} className="flex-between flex-align-center">
-                  <span>{item.name}</span>
-                  <span className="btn-primary fs-sm badge-pill">
-                    Popular
-                  </span>
+          <div className="modern-list">
+            <div className="list-header-modern">
+               <div className="col-info">Order Details</div>
+               <div className="col-status">Status</div>
+               <div className="col-total">Total</div>
+            </div>
+            <div className="list-body-modern">
+              {recentOrders.map((order) => (
+                <div key={order.id} className="list-row-modern">
+                  <div className="col-info">
+                    <div className="order-customer-name">{order.customer}</div>
+                    <div className="order-id-subtext">{order.id}</div>
+                  </div>
+                  <div className="col-status">
+                    <span className={`status-badge-modern ${order.status.toLowerCase()}`}>
+                      {order.status}
+                    </span>
+                  </div>
+                  <div className="col-total">
+                    <span className="order-total-value">RM {parseFloat(order.total).toFixed(2)}</span>
+                  </div>
                 </div>
               ))}
             </div>
+          </div>
           )}
+        </div>
+        <div className="card qr-merchant-card">
+          <h3 className="mb-15 text-center">Merchant QR</h3>
+          <div className="qr-content-wrapper">
+            <div className="qr-image-container">
+              <Image 
+                src="/merchant_qr.png" 
+                alt="Merchant QR" 
+                width={200} 
+                height={200}
+                className="qr-image-style"
+              />
+            </div>
+            <div className="qr-instruction-box">
+              <i className="fas fa-qrcode mr-2"></i>
+              <span>Scan to do a payment</span>
+            </div>
+          </div>
         </div>
       </div>
     </main>

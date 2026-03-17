@@ -410,10 +410,11 @@ button {
 .stat-card-modern {
     background: white;
     border-radius: var(--radius-md);
-    padding: 1.25rem;
+    padding: 1.25rem 1.5rem;
     display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
+    flex-direction: row;
+    align-items: center;
+    gap: 1.25rem;
     border: 1.5px solid #f18f3b;
     /* Unified orange-brown outline */
     transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -444,16 +445,150 @@ button {
 }
 
 .stat-value-modern {
-    font-size: 1.75rem;
+    font-size: 1.5rem;
     font-weight: 700;
     color: var(--pb-dark);
-    line-height: 1.2;
+    line-height: 1.1;
 }
 
 .stat-label-modern {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    margin-bottom: 2px;
+}
+
+/* Modern List-based Table Alternative */
+.modern-list {
+    display: flex;
+    flex-direction: column;
+    border: 1.5px solid var(--border-color);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    background: white;
+}
+
+.list-header-modern {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    padding: 1rem 1.5rem;
+    background: rgba(75, 54, 33, 0.03);
+    border-bottom: 1.5px solid var(--border-color);
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    letter-spacing: 0.05em;
+}
+
+.list-row-modern {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    padding: 1.25rem 1.5rem;
+    align-items: center;
+    border-bottom: 1px solid var(--border-color);
+    transition: all 0.2s ease;
+}
+
+.list-row-modern:last-child {
+    border-bottom: none;
+}
+
+.list-row-modern:hover {
+    background: rgba(241, 143, 59, 0.02);
+    transform: translateX(4px);
+}
+
+.order-customer-name {
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--pb-dark);
+    margin-bottom: 0.15rem;
+}
+
+.order-id-subtext {
+    font-size: 0.8rem;
     color: var(--text-muted);
     font-weight: 500;
+    letter-spacing: 0.3px;
+}
+
+.status-badge-modern {
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-size: 0.7rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    display: inline-block;
+    letter-spacing: 0.5px;
+}
+
+.status-badge-modern.pending { background: rgba(242, 153, 74, 0.1); color: #F2994A; }
+.status-badge-modern.preparing { background: rgba(45, 156, 219, 0.1); color: #2D9CDB; }
+.status-badge-modern.ready { background: rgba(39, 174, 96, 0.1); color: #27AE60; }
+.status-badge-modern.completed { background: rgba(33, 150, 83, 0.1); color: #219653; }
+
+.col-total {
+    text-align: right;
+}
+
+.order-total-value {
+    font-weight: 800;
+    font-size: 1.1rem;
+    color: var(--pb-dark);
+}
+
+/* Merchant QR Card Styling */
+.qr-merchant-card {
+    display: flex;
+    flex-direction: column;
+}
+
+.qr-content-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 1rem 0;
+}
+
+.qr-image-container {
+    padding: 1.25rem;
+    background: white;
+    border-radius: 20px;
+    box-shadow: var(--shadow-md);
+    border: 1.5px solid var(--border-color);
+    transition: transform 0.3s ease;
+}
+
+.qr-merchant-card:hover .qr-image-container {
+    transform: scale(1.02);
+    border-color: var(--pb-primary);
+}
+
+.qr-image-style {
+    display: block;
+    border-radius: 8px;
+}
+
+.qr-instruction-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.8rem 1.75rem;
+    background: var(--pb-dark);
+    color: white;
+    border-radius: 50px;
+    font-weight: 750;
+    font-size: 0.95rem;
+    box-shadow: var(--shadow-md);
+    width: fit-content;
+}
+
+.qr-instruction-box i {
+    color: var(--pb-primary);
 }
 
 @media (max-width: 1200px) {

@@ -28,8 +28,10 @@ export default function OrdersPage() {
   useEffect(() => {
     const savedOrders = JSON.parse(localStorage.getItem("pb_orders") || "[]");
     
-    // Check if saved orders have the new structure or if we need to expand to 5 active orders
-    const needsReset = (savedOrders.length > 0 && typeof savedOrders[0].items === 'string') || savedOrders.filter((o: any) => o.status !== 'Completed').length < 3;
+    // Check if saved orders have the new structure or if we need to expand to 5 active orders or rename Nasi Lemak
+    const needsReset = (savedOrders.length > 0 && typeof savedOrders[0].items === 'string') || 
+                       savedOrders.filter((o: any) => o.status !== 'Completed').length < 3 ||
+                       savedOrders.some((o: any) => o.items.some((i: any) => i.name === 'Nasi Lemak Special'));
 
     if (savedOrders.length === 0 || needsReset) {
       const initialOrders: Order[] = [
@@ -39,7 +41,7 @@ export default function OrdersPage() {
           type: "Walk-in",
           tableNumber: "05",
           items: [
-            { name: "Nasi Lemak Special", quantity: 2, price: 12.0 },
+            { name: "Nasi Lemak", quantity: 2, price: 12.0 },
             { name: "Teh Tarik", quantity: 1, price: 4.5 }
           ], 
           total: 28.5, 
@@ -51,7 +53,7 @@ export default function OrdersPage() {
           customer: "John Doe", 
           type: "Dine out",
           items: [
-            { name: "Nasi Lemak Special", quantity: 1, price: 12.5 }
+            { name: "Nasi Lemak", quantity: 1, price: 12.5 }
           ], 
           total: 12.5, 
           status: "Preparing", 
@@ -75,7 +77,7 @@ export default function OrdersPage() {
           type: "Walk-in",
           tableNumber: "01",
           items: [
-            { name: "Nasi Lemak Special", quantity: 3, price: 12.0 },
+            { name: "Nasi Lemak", quantity: 3, price: 12.0 },
             { name: "Kopi O", quantity: 2, price: 3.0 }
           ], 
           total: 42.0, 
@@ -87,7 +89,7 @@ export default function OrdersPage() {
           customer: "Peter Parker", 
           type: "Dine out",
           items: [
-            { name: "Nasi Lemak Special", quantity: 2, price: 12.5 }
+            { name: "Nasi Lemak", quantity: 2, price: 12.5 }
           ], 
           total: 25.0, 
           status: "Preparing", 
@@ -99,7 +101,7 @@ export default function OrdersPage() {
           type: "Walk-in",
           tableNumber: "02",
           items: [
-            { name: "Nasi Lemak Special", quantity: 1, price: 12.0 },
+            { name: "Nasi Lemak", quantity: 1, price: 12.0 },
             { name: "Teh Tarik", quantity: 2, price: 4.5 }
           ], 
           total: 21.0, 
