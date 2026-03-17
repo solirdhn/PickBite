@@ -23,6 +23,7 @@ export default function MenuPage() {
   const [basket, setBasket] = useState<Record<number, { item: MenuItem; quantity: number }>>({});
   const [showBasket, setShowBasket] = useState(false);
   const [orderType, setOrderType] = useState<'Dine In' | 'Take Away'>('Dine In');
+  const [successOrder, setSuccessOrder] = useState<string | null>(null);
 
   useEffect(() => {
     const savedMenu = JSON.parse(localStorage.getItem("pb_menu_data") || "[]");
@@ -145,9 +146,14 @@ export default function MenuPage() {
     const updatedOrders = [newOrder, ...savedOrders];
     localStorage.setItem("pb_orders", JSON.stringify(updatedOrders));
 
-    alert(`Order ${newOrder.id} placed successfully!`);
+    setSuccessOrder(newOrder.id);
     setBasket({});
-    setShowBasket(false);
+    
+    // Auto-close success message after 5 seconds
+    setTimeout(() => {
+      setSuccessOrder(null);
+      setShowBasket(false);
+    }, 5000);
   };
 
   const filteredMenu = menuItems.filter((item) => {
@@ -303,37 +309,49 @@ export default function MenuPage() {
                 )}
               </div>
 
-              <div className="basket-summary border-top pt-1">
-                <div className="order-type-toggle flex gap-05 mb-1">
-                  <button 
-                    className={`btn-primary flex-1 py-05 fs-xs ${orderType === 'Dine In' ? '' : 'btn-ghost'}`}
-                    onClick={() => setOrderType('Dine In')}
-                  >
-                    Dine In
-                  </button>
-                  <button 
-                    className={`btn-primary flex-1 py-05 fs-xs ${orderType === 'Take Away' ? '' : 'btn-ghost'}`}
-                    onClick={() => setOrderType('Take Away')}
-                  >
-                    Take Away
-                  </button>
-                </div>
+              <div className="basket-summary pt-1">
+                {successOrder ? (
+                  <div className="success-message-basket">
+                    <i className="fas fa-check-circle"></i>
+                    <p className="fw-bold">Order {successOrder} is placed</p>
+                    <button className="btn-text fs-xs mt-05" onClick={() => { setSuccessOrder(null); setShowBasket(false); }}>
+                      Done
+                    </button>
+                  </div>
+                ) : (
+                  <>
+                    <div className="order-type-toggle flex gap-05 mb-1">
+                      <button 
+                        className={`btn-primary flex-1 py-05 fs-xs ${orderType === 'Take Away' ? '' : 'btn-ghost'}`}
+                        onClick={() => setOrderType('Take Away')}
+                      >
+                        Take Away
+                      </button>
+                      <button 
+                        className={`btn-primary flex-1 py-05 fs-xs ${orderType === 'Dine In' ? '' : 'btn-ghost'}`}
+                        onClick={() => setOrderType('Dine In')}
+                      >
+                        Dine In
+                      </button>
+                    </div>
 
-                <div className="flex flex-between fw-bold fs-md mb-1">
-                  <span>Total</span>
-                  <span className="text-primary">RM {totalAmount.toFixed(2)}</span>
-                </div>
-                <div className="flex flex-column gap-05">
-                  <button className="btn-primary w-full py-05 fs-sm" onClick={placeOrder} disabled={Object.values(basket).length === 0}>
-                    Place Order
-                  </button>
-                  <button className="btn-primary btn-ghost w-full py-05 fs-xs" onClick={() => setBasket({})} disabled={Object.values(basket).length === 0}>
-                    Clear Basket
-                  </button>
-                  <button className="btn-text w-full fs-xs mt-05 flex-align-center justify-center gap-02" onClick={() => setShowBasket(false)}>
-                    <i className="fas fa-arrow-left"></i> Categories
-                  </button>
-                </div>
+                    <div className="flex flex-between fw-bold fs-md mb-1">
+                      <span>Total</span>
+                      <span className="text-primary">RM {totalAmount.toFixed(2)}</span>
+                    </div>
+                    <div className="flex flex-column gap-05">
+                      <button className="btn-primary w-full py-05 fs-sm" onClick={placeOrder} disabled={Object.values(basket).length === 0}>
+                        Place Order
+                      </button>
+                      <button className="btn-primary btn-ghost w-full py-05 fs-xs" onClick={() => setBasket({})} disabled={Object.values(basket).length === 0}>
+                        Clear Basket
+                      </button>
+                      <button className="btn-text w-full fs-xs mt-05 flex-align-center justify-center gap-02" onClick={() => setShowBasket(false)}>
+                        <i className="fas fa-arrow-left"></i> Categories
+                      </button>
+                    </div>
+                  </>
+                )}
               </div>
             </div>
           )}

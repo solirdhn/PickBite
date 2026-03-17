@@ -128,9 +128,21 @@ export default function OrdersPage() {
   }, []);
 
   const updateStatus = (orderId: string, newStatus: string) => {
+    if (newStatus === "delete") {
+      deleteOrder(orderId);
+      return;
+    }
     const updated = orders.map((o) => (o.id === orderId ? { ...o, status: newStatus } : o));
     setOrders(updated);
     localStorage.setItem("pb_orders", JSON.stringify(updated));
+  };
+
+  const deleteOrder = (orderId: string) => {
+    if (!confirm("Are you sure you want to delete this order?")) return;
+    const updated = orders.filter((o) => o.id !== orderId);
+    setOrders(updated);
+    localStorage.setItem("pb_orders", JSON.stringify(updated));
+    if (selectedOrderId === orderId) setSelectedOrderId(null);
   };
 
   const activeOrders = orders.filter((o) => o.status !== "Completed");
@@ -201,36 +213,42 @@ export default function OrdersPage() {
                     className={`card order-card-modern ${selectedOrderId === order.id ? "selected" : ""}`}
                     onClick={() => setSelectedOrderId(order.id)}
                   >
-                    <div className="order-main-info">
-                      <div className="order-id-tag">{order.id}</div>
-                      <div className="customer-info">
-                        <div className="customer-name">{order.customer}</div>
-                        <div className="order-items-summary">
-                          {order.items.map(item => `${item.name} x${item.quantity}`).join(", ")}
-                        </div>
+                    <div className="order-id-section flex flex-column gap-02">
+                      <div className="order-id-tag-simple">
+                        {order.id}
+                      </div>
+                      <div className="order-type-badge-simple">
+                        {order.type === 'Dine In' ? `Table ${order.tableNumber || '??'}` : 'Take Away'}
                       </div>
                     </div>
 
-                    <div className="order-meta-info">
-                      <div className="order-amount">RM {parseFloat(order.total.toString()).toFixed(2)}</div>
-                      <div className="order-time-badge">
+                    <div className="order-items-summary px-1 border-left border-right">
+                      {order.items.map(item => `${item.name} x${item.quantity}`).join(", ")}
+                    </div>
+
+                    <div className="order-meta-info text-center px-1 border-right">
+                      <div className="fw-bold fs-md">RM {parseFloat(order.total.toString()).toFixed(2)}</div>
+                      <div className="text-muted fs-xs mt-02">
                         <i className="far fa-clock"></i> {order.time}
                       </div>
                     </div>
 
-                    <div className="order-actions-row">
+                    <div className="order-actions-row flex flex-column gap-05 flex-align-end">
                       <span className={`badge-modern ${badgeClass}`}>{order.status}</span>
                       <select
                         id={`status-${order.id}`}
-                        className="status-select-modern"
+                        className="status-select-modern w-full"
                         value={order.status}
                         onChange={(e) => updateStatus(order.id, e.target.value)}
                         aria-label={`Change status for order ${order.id}`}
+                        onClick={(e) => e.stopPropagation()}
                       >
                         <option value="Pending">Pending</option>
                         <option value="Preparing">Preparing</option>
                         <option value="Ready">Ready for Pickup</option>
                         <option value="Completed">Complete Order</option>
+                        <option disabled>──────────</option>
+                        <option value="delete" className="text-danger">Delete Order</option>
                       </select>
                     </div>
                   </div>
