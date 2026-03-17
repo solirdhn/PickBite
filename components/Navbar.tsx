@@ -11,9 +11,7 @@ export default function Navbar() {
     { name: "Home", href: "/", icon: "fas fa-th-large" },
     { name: "Orders", href: "/orders", icon: "fas fa-clipboard-list" },
     { name: "Menu", href: "/menu-management", icon: "fas fa-utensils" },
-    { name: "Categories", href: "#", icon: "fas fa-tags" },
     { name: "Sales", href: "#", icon: "fas fa-chart-line" },
-    { name: "Settings", href: "#", icon: "fas fa-cog" },
   ];
 
   return (
@@ -37,6 +35,9 @@ export default function Navbar() {
         <div className="user-profile">
           <span className="user-name">Bite Bistro Merchant</span>
           <div className="user-avatar">BB</div>
+          <Link href="#" className="settings-btn-nav" title="Settings">
+            <i className="fas fa-cog"></i>
+          </Link>
           <Link href="#" className="logout-btn" title="Logout">
             <i className="fas fa-sign-out-alt"></i>
           </Link>
