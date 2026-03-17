@@ -23,6 +23,7 @@ export default function MenuPage() {
   const [basket, setBasket] = useState<Record<number, { item: MenuItem; quantity: number }>>({});
   const [showBasket, setShowBasket] = useState(false);
   const [orderType, setOrderType] = useState<'Dine In' | 'Take Away'>('Dine In');
+  const [paymentMethod, setPaymentMethod] = useState<string | null>(null);
   const [successOrder, setSuccessOrder] = useState<string | null>(null);
 
   useEffect(() => {
@@ -138,6 +139,7 @@ export default function MenuPage() {
         price: entry.item.price
       })),
       total: totalAmount,
+      paymentMethod: paymentMethod,
       status: "Pending",
       time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     };
@@ -153,6 +155,7 @@ export default function MenuPage() {
     setTimeout(() => {
       setSuccessOrder(null);
       setShowBasket(false);
+      setPaymentMethod(null);
     }, 5000);
   };
 
@@ -335,12 +338,39 @@ export default function MenuPage() {
                       </button>
                     </div>
 
-                    <div className="flex flex-between fw-bold fs-md mb-1">
+                    <div className="flex flex-between fw-bold fs-md mb-05">
                       <span>Total</span>
                       <span className="text-primary">RM {totalAmount.toFixed(2)}</span>
                     </div>
+
+                    <div className="payment-selection mb-1">
+                      <div className="fs-xs fw-bold text-muted text-uppercase mb-05">Payment Method</div>
+                      <div className="payment-grid-modern">
+                        {[
+                          { id: 'qr', label: 'QR', icon: 'fa-qrcode' },
+                          { id: 'credit', label: 'Credit', icon: 'fa-credit-card' },
+                          { id: 'debit', label: 'Debit', icon: 'fa-id-card' },
+                          { id: 'cash', label: 'Cash', icon: 'fa-money-bill-wave' }
+                        ].map((method) => (
+                          <button
+                            key={method.id}
+                            className={`btn-payment-method ${paymentMethod === method.id ? 'active' : ''}`}
+                            onClick={() => setPaymentMethod(method.id)}
+                          >
+                            <i className={`fas ${method.icon}`}></i>
+                            {method.label}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
                     <div className="flex flex-column gap-05">
-                      <button className="btn-primary w-full py-05 fs-sm" onClick={placeOrder} disabled={Object.values(basket).length === 0}>
+                      <button 
+                        className="btn-primary w-full py-05 fs-sm" 
+                        onClick={placeOrder} 
+                        disabled={Object.values(basket).length === 0 || !paymentMethod}
+                        style={{ opacity: !paymentMethod ? 0.6 : 1, cursor: !paymentMethod ? 'not-allowed' : 'pointer' }}
+                      >
                         Place Order
                       </button>
                       <button className="btn-primary btn-ghost w-full py-05 fs-xs" onClick={() => setBasket({})} disabled={Object.values(basket).length === 0}>

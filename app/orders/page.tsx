@@ -17,6 +17,7 @@ interface Order {
   items: OrderItem[];
   total: number;
   status: string;
+  paymentMethod?: string;
   time: string;
 }
 
@@ -286,9 +287,9 @@ export default function OrdersPage() {
                         <span className="history-id">{order.id}</span>
                         <span className="history-time">{order.time}</span>
                       </div>
-                      <div className="history-customer">{order.customer}</div>
                       <div className="history-footer">
                         <span className="history-total">RM {parseFloat(order.total.toString()).toFixed(2)}</span>
+                        <span className="fs-xs fw-bold text-muted">{order.type}</span>
                         <span className="history-status">
                           <i className="fas fa-check-circle"></i> Done
                         </span>

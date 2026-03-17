@@ -7,6 +7,12 @@ interface SalesHistoryItem {
   date: string;
   orders: number;
   revenue: number;
+  breakdown: {
+    qr: number;
+    credit: number;
+    debit: number;
+    cash: number;
+  };
 }
 
 export default function SalesPage() {
@@ -17,6 +23,7 @@ export default function SalesPage() {
   });
 
   const [history, setHistory] = useState<SalesHistoryItem[]>([]);
+  const [selectedIdx, setSelectedIdx] = useState<number | null>(null);
 
   useEffect(() => {
     // Load data from localStorage
@@ -54,10 +61,22 @@ export default function SalesPage() {
         const dailyOrders = Math.floor(Math.random() * 20) + 10; // 10-30 orders
         const dailyRevenue = dailyOrders * (Math.random() * 10 + 15); // Avg RM 15-25 per order
 
+        // Payment Breakdown Logic
+        const qrPct = 0.4 + Math.random() * 0.2; // 40-60% QR
+        const creditPct = 0.2 + Math.random() * 0.1; // 20-30% Credit
+        const debitPct = 0.1 + Math.random() * 0.1; // 10-20% Debit
+        const cashPct = 1 - (qrPct + creditPct + debitPct);
+
         mockHistory.push({
             date: i === 1 ? "Yesterday" : dateStr,
             orders: dailyOrders,
-            revenue: dailyRevenue
+            revenue: dailyRevenue,
+            breakdown: {
+              qr: dailyRevenue * qrPct,
+              credit: dailyRevenue * creditPct,
+              debit: dailyRevenue * debitPct,
+              cash: dailyRevenue * cashPct
+            }
         });
     }
     setHistory(mockHistory);
@@ -125,7 +144,11 @@ export default function SalesPage() {
             </div>
             <div className="list-body-modern">
                 {history.map((day, idx) => (
-                    <div key={idx} className="list-row-modern">
+                    <div 
+                        key={idx} 
+                        className={`list-row-modern ${selectedIdx === idx ? 'selected' : ''}`}
+                        onClick={() => setSelectedIdx(idx)}
+                    >
                         <div className="col-info">
                             <div className="order-customer-name">{day.date}</div>
                         </div>
@@ -144,11 +167,36 @@ export default function SalesPage() {
         </div>
 
         <div className="card">
-            <h3 className="mb-15">Analytics Insights</h3>
-            <div className="p-20 text-center text-muted border-dashed-modern">
-                <i className="fas fa-lightbulb fs-xl opacity-10 mb-10 text-primary"></i>
-                <p className="fs-sm">Trends show highest sales on weekends. Consider running promotions on weekdays!</p>
-            </div>
+            <h3 className="mb-15">
+                {selectedIdx !== null ? `Payment Breakdown - ${history[selectedIdx].date}` : 'Analytics Insights'}
+            </h3>
+            
+            {selectedIdx !== null ? (
+                <div className="payment-breakdown-details">
+                    {[
+                        { label: 'QR Payment', value: history[selectedIdx].breakdown.qr },
+                        { label: 'Credit Card', value: history[selectedIdx].breakdown.credit },
+                        { label: 'Debit Card', value: history[selectedIdx].breakdown.debit },
+                        { label: 'Cash', value: history[selectedIdx].breakdown.cash }
+                    ].map((item, i) => (
+                        <div key={i} className="breakdown-simple-row">
+                            <span className="text-muted fs-sm fw-medium">{item.label}</span>
+                            <span className="fw-bold fs-md">RM {item.value.toFixed(2)}</span>
+                        </div>
+                    ))}
+                    <div className="mt-20 pt-15 border-top flex-between flex-align-center">
+                        <span className="text-muted fw-bold fs-sm text-uppercase">Total Daily Revenue</span>
+                        <span className="order-total-value fs-xl">
+                            RM {history[selectedIdx].revenue.toFixed(2)}
+                        </span>
+                    </div>
+                </div>
+            ) : (
+                <div className="p-20 text-center text-muted border-dashed-modern">
+                    <i className="fas fa-lightbulb fs-xl opacity-10 mb-10 text-primary"></i>
+                    <p className="fs-sm">Click on a day in your sales history to view the detailed payment breakdown.</p>
+                </div>
+            )}
         </div>
       </div>
     </main>

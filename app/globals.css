@@ -532,6 +532,13 @@ button {
     transform: translateX(4px);
 }
 
+.list-row-modern.selected {
+    border-color: var(--pb-primary);
+    background: rgba(241, 143, 59, 0.05);
+    transform: translateX(8px);
+    box-shadow: var(--shadow-sm);
+}
+
 .order-customer-name {
     font-weight: 700;
     font-size: 1rem;
@@ -569,6 +576,41 @@ button {
     font-weight: 800;
     font-size: 1.1rem;
     color: var(--pb-dark);
+}
+
+/* Sales Page Breakdown Styles */
+.payment-breakdown-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+.breakdown-card-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.8rem 1.2rem;
+    border-radius: var(--radius-sm);
+    background: var(--pb-accent);
+    transition: all 0.2s ease;
+}
+
+.breakdown-card-item:hover {
+    background: white;
+    box-shadow: var(--shadow-sm);
+    transform: translateY(-2px);
+}
+
+.breakdown-label-group {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.breakdown-icon {
+    width: 24px;
+    text-align: center;
+    font-size: 1.1rem;
 }
 
 /* Merchant QR Card Styling */
@@ -1543,4 +1585,42 @@ main.main-content .category-vertical-tab:hover:not(.active) {
     display: flex;
     gap: 0.75rem;
     margin-bottom: 1rem;
+}
+/* Payment Method Selection */
+.payment-grid-modern {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
+}
+
+.btn-payment-method {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.6rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.75rem;
+    font-weight: 600;
+    background: white;
+    border: 1px solid var(--border-color);
+    color: var(--text-main);
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.btn-payment-method:hover {
+    background: var(--pb-accent);
+    border-color: var(--pb-primary);
+}
+
+.btn-payment-method.active {
+    border: 1.5px solid var(--pb-primary) !important;
+    background: rgba(241, 143, 59, 0.1) !important;
+    color: var(--pb-primary) !important;
+    box-shadow: var(--shadow-sm);
+}
+
+.btn-payment-method i {
+    font-size: 0.9rem;
 }
