@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orders - PickBite Merchant</title>
+    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Orders Specific Styles */
+        .order-tabs {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .tab {
+            padding: 1rem 0.5rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .tab.active {
+            color: var(--pb-primary);
+        }
+
+        .tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--pb-primary);
+            border-radius: 10px;
+        }
+
+        .order-card {
+            margin-bottom: 1rem;
+            display: grid;
+            grid-template-columns: 100px 1.5fr 1fr 1fr 150px;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .order-id {
+            font-weight: 700;
+            color: var(--pb-dark);
+        }
+
+        .badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .badge-pending { background: rgba(241, 143, 59, 0.1); color: var(--pb-primary); }
+        .badge-preparing { background: rgba(43, 144, 226, 0.1); color: #2B90E2; }
+        .badge-ready { background: rgba(39, 174, 96, 0.1); color: var(--success); }
+        .badge-completed { background: #F3F4F6; color: var(--text-muted); }
+
+        .items-list {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .order-total {
+            font-weight: 700;
+            color: var(--pb-dark);
+        }
+
+        .status-select {
+            padding: 0.5rem;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            font-family: inherit;
+            font-size: 0.85rem;
+            width: 100%;
+        }
+
+        .empty-orders {
+            text-align: center;
+            padding: 4rem;
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="nav-menu">
+            <a href="index.html" class="nav-item">
+                <i class="fas fa-th-large"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="orders.html" class="nav-item active">
+                <i class="fas fa-clipboard-list"></i>
+                <span>Orders</span>
+            </a>
+            <a href="menu-management.html" class="nav-item">
+                <i class="fas fa-utensils"></i>
+                <span>Menu</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i class="fas fa-tags"></i>
+                <span>Categories</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i class="fas fa-chart-line"></i>
+                <span>Sales</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i class="fas fa-cog"></i>
+                <span>Settings</span>
+            </a>
+        </div>
+        <div class="nav-right">
+            <div class="user-profile">
+                <span class="user-name">Bite Bistro Merchant</span>
+                <div class="user-avatar">BB</div>
+                <a href="#" class="logout-btn" title="Logout">
+                    <i class="fas fa-sign-out-alt"></i>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="app-container">
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Page Branding -->
+            <div class="page-branding">
+                <img src="PickBite_Logo.png" alt="PickBite" class="page-logo">
+                <h1 class="page-brand-name">PickBite</h1>
+            </div>
+
+            <div style="margin-bottom: 2rem;">
+                <h1>Order Queue</h1>
+                <p style="color: var(--text-muted)">Manage incoming customer orders and progress.</p>
+            </div>
+
+            <div class="order-tabs">
+                <div class="tab active" data-filter="all">All Orders</div>
+                <div class="tab" data-filter="Pending">Pending</div>
+                <div class="tab" data-filter="Preparing">Preparing</div>
+                <div class="tab" data-filter="Ready">Ready for Pickup</div>
+                <div class="tab" data-filter="Completed">Completed</div>
+            </div>
+
+            <div id="ordersContainer">
+                <!-- Orders will be loaded here -->
+            </div>
+        </main>
+    </div>
+
+    <script>
+        let orders = JSON.parse(localStorage.getItem('pb_orders')) || [
+            { id: '#PB-1001', customer: 'Alice Smith', items: 'Nasi Lemak Special x2, Teh Tarik x1', total: 28.50, status: 'Pending', time: '10:30 AM' },
+            { id: '#PB-1002', customer: 'John Doe', items: 'Nasi Lemak Special x1', total: 12.50, status: 'Preparing', time: '10:45 AM' },
+            { id: '#PB-1003', customer: 'Sarah Connor', items: 'Teh Tarik Kaw x3', total: 10.50, status: 'Ready', time: '11:00 AM' }
+        ];
+
+        if (!localStorage.getItem('pb_orders')) {
+            localStorage.setItem('pb_orders', JSON.stringify(orders));
+        }
+
+        const ordersContainer = document.getElementById('ordersContainer');
+        const tabs = document.querySelectorAll('.tab');
+
+        function renderOrders(filter = 'all') {
+            ordersContainer.innerHTML = '';
+            const filtered = filter === 'all' ? orders : orders.filter(o => o.status === filter);
+
+            if (filtered.length === 0) {
+                ordersContainer.innerHTML = `
+                    <div class="card empty-orders">
+                        <i class="fas fa-clipboard-list" style="font-size: 3rem; opacity: 0.1; margin-bottom: 1rem"></i>
+                        <p>No orders found in this category.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            filtered.forEach(order => {
+                const card = document.createElement('div');
+                card.className = 'card order-card';
+                
+                let badgeClass = 'badge-pending';
+                if (order.status === 'Preparing') badgeClass = 'badge-preparing';
+                if (order.status === 'Ready') badgeClass = 'badge-ready';
+                if (order.status === 'Completed') badgeClass = 'badge-completed';
+
+                card.innerHTML = `
+                    <div class="order-id">${order.id}</div>
+                    <div>
+                        <div style="font-weight: 600">${order.customer}</div>
+                        <div class="items-list">${order.items}</div>
+                    </div>
+                    <div class="order-total">RM ${parseFloat(order.total).toFixed(2)}</div>
+                    <div>
+                        <span class="badge ${badgeClass}">${order.status}</span>
+                        <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px">${order.time}</div>
+                    </div>
+                    <div>
+                        <select class="status-select" onchange="updateStatus('${order.id}', this.value)">
+                            <option value="Pending" ${order.status === 'Pending' ? 'selected' : ''}>Pending</option>
+                            <option value="Preparing" ${order.status === 'Preparing' ? 'selected' : ''}>Preparing</option>
+                            <option value="Ready" ${order.status === 'Ready' ? 'selected' : ''}>Ready for Pickup</option>
+                            <option value="Completed" ${order.status === 'Completed' ? 'selected' : ''}>Completed</option>
+                        </select>
+                    </div>
+                `;
+                ordersContainer.appendChild(card);
+            });
+        }
+
+        window.updateStatus = (orderId, newStatus) => {
+            const index = orders.findIndex(o => o.id === orderId);
+            if (index !== -1) {
+                orders[index].status = newStatus;
+                localStorage.setItem('pb_orders', JSON.stringify(orders));
+                renderOrders(document.querySelector('.tab.active').dataset.filter);
+            }
+        };
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                tabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                renderOrders(tab.dataset.filter);
+            });
+        });
+
+        // Initial Load
+        renderOrders();
+    </script>
+</body>
+</html>
