@@ -197,7 +197,7 @@ button {
 }
 
 .dashboard-page .welcome-header-container {
-    margin-top: 1.25rem; /* Moved down by 30px from previous -0.625rem */
+    margin-top: -0.625rem; /* Moved up total 30px at user request */
 }
 
 .dashboard-logo-large {
@@ -690,6 +690,23 @@ main.main-content .filter-bar {
     max-width: 450px;
     transition: all 0.3s ease;
     box-shadow: var(--shadow-sm);
+    width: 100%; /* Ensure it can grow */
+}
+
+.search-section-horizontal {
+    margin-top: 1.25rem;
+    margin-bottom: 0.5625rem; /* Reduced by 5px to move divider up */
+    width: 100%;
+}
+
+.full-width-search {
+    max-width: none !important;
+}
+
+.menu-main-column {
+    display: flex;
+    flex-direction: column;
+    min-width: 0; /* Prevent overflow */
 }
 
 main.main-content .filter-bar:focus-within {
@@ -928,20 +945,30 @@ main.main-content .menu-divider {
     border: none !important;
     height: 1px !important;
     background: var(--border-color) !important;
-    margin: 2rem 0 !important;
+    margin: 0.3125rem 0 0.375rem 0 !important; /* Top 5px, Bottom 6px to achieve specific 5px/7px shifts */
     width: 100% !important;
     opacity: 0.6 !important;
 }
 
 main.main-content .menu-sidebar-right {
     display: block !important;
-    background: white !important;
-    border-radius: var(--radius-md) !important;
-    padding: 1.5rem !important;
-    border: 1.5px solid #f18f3b !important; /* Brand orange-brown */
+    background: transparent !important;
+    border-radius: 0 !important;
+    padding: 0 0 0 2rem !important; /* Space after the vertical line */
+    border: none !important;
+    border-left: 1.5px solid var(--border-color) !important; /* The vertical line */
     position: sticky !important;
     top: calc(var(--header-height) + 2rem) !important;
     height: fit-content !important;
+    margin-top: 5.5rem !important; /* Align with food items */
+}
+
+.sidebar-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--pb-dark);
+    margin-bottom: 1.2rem;
+    padding-left: 0.5rem;
 }
 
 main.main-content .category-vertical-tabs {
@@ -952,23 +979,24 @@ main.main-content .category-vertical-tabs {
 
 main.main-content .category-vertical-tab {
     display: block !important;
-    padding: 0.8rem 1rem !important;
-    border-radius: var(--radius-sm) !important;
+    padding: 0.5rem 1rem !important;
+    border-radius: 0 !important;
     color: var(--text-muted) !important;
     font-weight: 600 !important;
     cursor: pointer !important;
     transition: all 0.2s ease !important;
-    border: 1px solid transparent !important;
+    background: transparent !important;
+    border: none !important;
 }
 
 main.main-content .category-vertical-tab.active {
-    background: var(--pb-primary) !important;
-    color: white !important;
-    border-color: var(--pb-primary) !important;
+    background: transparent !important;
+    color: var(--pb-primary) !important;
+    font-weight: 700 !important;
 }
 
 main.main-content .category-vertical-tab:hover:not(.active) {
-    background: rgba(241, 143, 59, 0.05) !important;
+    background: transparent !important;
     color: var(--pb-primary) !important;
 }
 

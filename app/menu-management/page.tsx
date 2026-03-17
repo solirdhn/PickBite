@@ -129,24 +129,25 @@ export default function MenuPage() {
         </div>
       </div>
 
-      <div className="search-section-horizontal">
-        <div className="filter-bar full-width-search">
-          <i className="fas fa-search text-muted"></i>
-          <input
-            type="text"
-            placeholder="Search food items..."
-            className="search-input"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            aria-label="Search food items"
-          />
-        </div>
-      </div>
-
-      <hr className="menu-divider" />
-
       <div className="menu-main-content-layout">
-        <div className="food-grid">
+        <div className="menu-main-column">
+          <div className="search-section-horizontal">
+            <div className="filter-bar full-width-search">
+              <i className="fas fa-search text-muted"></i>
+              <input
+                type="text"
+                placeholder="Search food items..."
+                className="search-input"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                aria-label="Search food items"
+              />
+            </div>
+          </div>
+          
+          <hr className="menu-divider m-0 mb-2" />
+          
+          <div className="food-grid">
           {filteredMenu.length === 0 ? (
             <div className="p-3 text-center text-muted grid-all">
               <i className="fas fa-search fs-xl opacity-10"></i>
@@ -172,7 +173,7 @@ export default function MenuPage() {
             ))
           )}
         </div>
-
+      </div>
         <aside className="menu-sidebar-right">
           <h4 className="sidebar-title">Categories</h4>
           <div className="category-vertical-tabs">
