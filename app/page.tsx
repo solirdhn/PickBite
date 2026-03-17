@@ -51,14 +51,14 @@ export default function Dashboard() {
   }, []);
 
   return (
-    <main className="main-content">
+    <main className="main-content dashboard-page">
       <div className="welcome-header-container">
         <div className="dashboard-logo-large">
           <Image 
             src="/PickBiteLogo.png" 
             alt="PickBite Logo" 
             width={276} 
-            height={149}
+            height={139}
             priority
           />
         </div>

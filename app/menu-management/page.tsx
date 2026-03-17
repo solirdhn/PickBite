@@ -109,7 +109,7 @@ export default function MenuPage() {
             src="/PickBiteLogo.png" 
             alt="PickBite Logo" 
             width={276} 
-            height={149}
+            height={139}
             priority
           />
         </div>

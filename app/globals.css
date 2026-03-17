@@ -193,6 +193,11 @@ button {
     align-items: center;
     gap: 1.5rem; /* Reduced from 2rem to close gap */
     margin-bottom: 3rem;
+    margin-top: -1.25rem; /* Moves the entire header up by ~20px */
+}
+
+.dashboard-page .welcome-header-container {
+    margin-top: -0.625rem; /* Moves it down by 10px strictly on Dashboard page */
 }
 
 .dashboard-logo-large {
