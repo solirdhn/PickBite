@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 
 interface Order {
   id: string;
@@ -51,12 +52,22 @@ export default function OrdersPage() {
     : activeOrders.filter((o) => o.status === filter);
 
   return (
-    <main className="main-content">
-      <div className="section-header-modern">
-        <div>
-          <h1 className="h2">Order Queue</h1>
-          <p className="text-muted">Manage active customer orders and progress.</p>
+    <main className="main-content orders-page">
+      <div className="welcome-header-container">
+        <div className="dashboard-logo-large">
+          <Image
+            src="/PickBiteLogo.png"
+            alt="PickBite Logo"
+            width={276}
+            height={139}
+            priority
+          />
         </div>
+        <div className="welcome-divider"></div>
+        <section className="welcome-section">
+          <h1>Order Queue</h1>
+          <p className="text-muted">Manage active customer orders and progress.</p>
+        </section>
       </div>
 
       <div className="active-switch-container">

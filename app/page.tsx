@@ -27,7 +27,7 @@ export default function Dashboard() {
 
   useEffect(() => {
     // Load data from localStorage
-    const menuItems = JSON.parse(localStorage.getItem("pb_menu") || "[]");
+    const menuItems = JSON.parse(localStorage.getItem("pb_menu_data") || "[]");
     const orders = JSON.parse(localStorage.getItem("pb_orders") || "[]");
 
     // Calculate Stats
