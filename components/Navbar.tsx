@@ -11,7 +11,7 @@ export default function Navbar() {
     { name: "Home", href: "/", icon: "fas fa-th-large" },
     { name: "Orders", href: "/orders", icon: "fas fa-clipboard-list" },
     { name: "Menu", href: "/menu-management", icon: "fas fa-utensils" },
-    { name: "Sales", href: "#", icon: "fas fa-chart-line" },
+    { name: "Sales", href: "/sales", icon: "fas fa-chart-line" },
   ];
 
   return (
