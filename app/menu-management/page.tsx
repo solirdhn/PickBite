@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 
 interface MenuItem {
   id: number;
@@ -23,7 +24,7 @@ export default function MenuPage() {
   useEffect(() => {
     const savedMenu = JSON.parse(localStorage.getItem("pb_menu") || "[]");
     const menuVersion = localStorage.getItem("pb_menu_version");
-    const CURRENT_VERSION = "1.1"; // Increment this when updating initialMenu
+    const CURRENT_VERSION = "1.3"; // Increment this when updating initialMenu
 
     if (savedMenu.length === 0 || menuVersion !== CURRENT_VERSION) {
       const initialMenu = [
@@ -32,9 +33,9 @@ export default function MenuPage() {
         { id: 3, name: "Satay Ayam (6 pcs)", category: "Main Course", price: 9.0, desc: "Grilled chicken skewers with peanut sauce.", image: "https://i.ytimg.com/vi/20Twt_s9Jh8/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLBBSaj6BOBTJwP4jIqurtud_zcBOA", isPopular: true },
         { id: 4, name: "Mee Goreng Mamak", category: "Main Course", price: 8.5, desc: "Spicy stir-fried noodles with tofu and egg.", image: "https://images.unsplash.com/photo-1585032226651-759b368d7246?w=500&auto=format&fit=crop", isPopular: false },
         { id: 5, name: "Chicken Rice", category: "Main Course", price: 10.5, desc: "Hainanese style steamed chicken with rice.", image: "https://images.deliveryhero.io/image/fd-my/LH/v4un-listing.jpg", isPopular: false },
-        { id: 6, name: "Milo Dinosaur", category: "Beverages", price: 5.0, desc: "Iced Milo topped with extra Milo powder.", image: "/milo-dinosaur.png", isPopular: true },
-        { id: 7, name: "Iced Lemon Tea", category: "Beverages", price: 4.0, desc: "Refreshing tea with a squeeze of fresh lemon.", image: "/iced-lemon-tea.png", isPopular: false },
-        { id: 8, name: "Cendol", category: "Dessert", price: 4.5, desc: "Shaved ice with green jelly and coconut milk.", image: "/cendol.png", isPopular: false },
+        { id: 6, name: "Milo Dinosaur", category: "Beverages", price: 5.0, desc: "Iced Milo topped with extra Milo powder.", image: "https://www.wandercooks.com/wp-content/uploads/2023/03/malaysian-milo-dinosaur-3-683x1024.jpg", isPopular: true },
+        { id: 7, name: "Iced Lemon Tea", category: "Beverages", price: 4.0, desc: "Refreshing tea with a squeeze of fresh lemon.", image: "https://aromaticessence.co/wp-content/uploads/2016/03/image55.jpeg", isPopular: false },
+        { id: 8, name: "Cendol", category: "Dessert", price: 4.5, desc: "Shaved ice with green jelly and coconut milk.", image: "https://www.saveur.com/uploads/2019/04/01/7SD4OZMRAULKZD6Q7HO6XSBJVY.jpg?auto=webp", isPopular: false },
         { id: 9, name: "ABC (Air Batu Campur)", category: "Dessert", price: 6.0, desc: "Shaved ice with sweet syrup and toppings.", image: "https://images.unsplash.com/photo-1488477181946-6428a0291777?w=500&auto=format&fit=crop", isPopular: false },
         { id: 10, name: "Roti Canai", category: "Breakfast", price: 2.5, desc: "Crispy flatbread served with dhal.", image: "https://www.rotinrice.com/wp-content/uploads/2011/04/RotiCanai-1.jpg", isPopular: true },
       ];
@@ -102,31 +103,45 @@ export default function MenuPage() {
 
   return (
     <main className="main-content">
-      <div className="menu-header">
-        <div>
-          <h1>Your Restaurant Menu</h1>
-          <p className="text-muted">Manage food items, prices, and availability.</p>
+      <div className="welcome-header-container">
+        <div className="dashboard-logo-large">
+          <Image 
+            src="/PickBiteLogo.png" 
+            alt="PickBite Logo" 
+            width={276} 
+            height={149}
+            priority
+          />
         </div>
-        <div className="flex gap-1 flex-align-center">
-          <button className="btn-primary btn-ghost" onClick={resetMenu}>
-            <i className="fas fa-sync-alt"></i> Reset Defaults
-          </button>
-          <button className="btn-primary" onClick={() => { setIsModalOpen(true); setEditItem(null); }}>
-            <i className="fas fa-plus"></i> Add New Item
-          </button>
-        </div>
-      </div>
+        <div className="welcome-divider"></div>
+        <div className="welcome-section">
+          <div className="flex flex-align-center gap-2 mb-1">
+            <div>
+              <h1>Your Restaurant Menu</h1>
+              <p className="text-muted">Manage food items, prices, and availability.</p>
+            </div>
+            <div className="flex gap-1 flex-align-center">
+              <button className="btn-primary btn-ghost" onClick={resetMenu}>
+                <i className="fas fa-sync-alt"></i> Reset Defaults
+              </button>
+              <button className="btn-primary" onClick={() => { setIsModalOpen(true); setEditItem(null); }}>
+                <i className="fas fa-plus"></i> Add New Item
+              </button>
+            </div>
+          </div>
 
-      <div className="filter-bar">
-        <i className="fas fa-search text-muted"></i>
-        <input
-          type="text"
-          placeholder="Search food items..."
-          className="search-input"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          aria-label="Search food items"
-        />
+          <div className="filter-bar m-0">
+            <i className="fas fa-search text-muted"></i>
+            <input
+              type="text"
+              placeholder="Search food items..."
+              className="search-input"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              aria-label="Search food items"
+            />
+          </div>
+        </div>
       </div>
 
       <hr className="menu-divider" />

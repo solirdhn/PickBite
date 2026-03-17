@@ -57,8 +57,8 @@ export default function Dashboard() {
           <Image 
             src="/PickBiteLogo.png" 
             alt="PickBite Logo" 
-            width={256} 
-            height={129}
+            width={276} 
+            height={149}
             priority
           />
         </div>

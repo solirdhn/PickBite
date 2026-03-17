@@ -191,13 +191,14 @@ button {
 .welcome-header-container {
     display: flex;
     align-items: center;
-    gap: 2rem;
+    gap: 1.5rem; /* Reduced from 2rem to close gap */
     margin-bottom: 3rem;
 }
 
 .dashboard-logo-large {
     flex-shrink: 0;
     filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
+    margin-top: -1.5rem; /* Moves logo up as requested */
 }
 
 .welcome-divider {
@@ -208,7 +209,11 @@ button {
 }
 
 .welcome-section {
+    display: flex;
+    flex-direction: column;
     margin-bottom: 0;
+    padding-top: 1.5rem; /* Moves text lower down to align better with logo */
+    max-width: 800px; /* Prevents stretching and closes horizontal gap */
 }
 
 .welcome-section h1 {
@@ -669,21 +674,34 @@ button {
 
 /* Updated filter-bar to be at the top with no background */
 main.main-content .filter-bar {
-    background: none;
-    padding: 0;
-    border: none;
-    margin-bottom: 1.5rem;
+    background: var(--bg-white);
+    padding: 0.5rem 1.25rem;
+    border: 1.5px solid var(--border-color);
+    border-radius: var(--radius-md);
+    margin-bottom: 2rem;
     display: flex;
     gap: 1rem;
     align-items: center;
+    max-width: 450px;
+    transition: all 0.3s ease;
+    box-shadow: var(--shadow-sm);
+}
+
+main.main-content .filter-bar:focus-within {
+    border-color: var(--pb-primary);
+    box-shadow: 0 0 0 3px rgba(241, 143, 59, 0.1);
+    transform: translateY(-2px);
 }
 
 .search-input {
-    padding: 0.6rem 1rem;
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-sm);
+    padding: 0.4rem 0;
+    border: none;
+    background: transparent;
     flex: 1;
     font-family: inherit;
+    font-size: 0.95rem;
+    color: var(--text-main);
+    outline: none;
 }
 
 .category-select {
