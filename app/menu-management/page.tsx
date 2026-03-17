@@ -366,10 +366,9 @@ export default function MenuPage() {
 
                     <div className="flex flex-column gap-05">
                       <button 
-                        className="btn-primary w-full py-05 fs-sm" 
+                        className="btn-primary btn-primary-order-place" 
                         onClick={placeOrder} 
                         disabled={Object.values(basket).length === 0 || !paymentMethod}
-                        style={{ opacity: !paymentMethod ? 0.6 : 1, cursor: !paymentMethod ? 'not-allowed' : 'pointer' }}
                       >
                         Place Order
                       </button>

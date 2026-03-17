@@ -582,24 +582,21 @@ button {
 .payment-breakdown-details {
     display: flex;
     flex-direction: column;
-    gap: 0.8rem;
+    margin-top: 0.5rem;
 }
 
-.breakdown-card-item {
+.breakdown-simple-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0.8rem 1.2rem;
-    border-radius: var(--radius-sm);
-    background: var(--pb-accent);
-    transition: all 0.2s ease;
+    padding: 0.85rem 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
 }
 
-.breakdown-card-item:hover {
-    background: white;
-    box-shadow: var(--shadow-sm);
-    transform: translateY(-2px);
+.breakdown-simple-row:last-of-type {
+    border-bottom: none;
 }
+
 
 .breakdown-label-group {
     display: flex;
@@ -1623,4 +1620,15 @@ main.main-content .category-vertical-tab:hover:not(.active) {
 
 .btn-payment-method i {
     font-size: 0.9rem;
+}
+
+.btn-primary-order-place {
+    width: 100%;
+    padding: 0.5rem 0;
+    font-size: 0.875rem;
+}
+
+.btn-primary-order-place:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
 }
