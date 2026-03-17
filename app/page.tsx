@@ -66,7 +66,7 @@ export default function Dashboard() {
         <section className="welcome-section">
           <h1>
             Welcome back,{" "}
-            <span style={{ color: "var(--pb-primary)" }}>Bite Bistro</span>!
+            <span className="text-primary">Bite Bistro</span>!
           </h1>
           <p>Here&apos;s what happening with your restaurant today.</p>
         </section>
@@ -114,45 +114,32 @@ export default function Dashboard() {
         </div>
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: "1.5rem" }}>
+      <div className="grid-2-1">
         <div className="card">
-          <h3 style={{ marginBottom: "1.5rem" }}>Recent Orders</h3>
+          <h3 className="mb-15">Recent Orders</h3>
           {recentOrders.length === 0 ? (
-            <p style={{ color: "var(--text-muted)" }}>No orders yet.</p>
+            <p className="text-muted">No orders yet.</p>
           ) : (
-            <table style={{ width: "100%", borderCollapse: "collapse" }}>
+            <table className="w-full border-collapse">
               <thead>
-                <tr
-                  style={{
-                    textAlign: "left",
-                    borderBottom: "1px solid var(--border-color)",
-                    color: "var(--text-muted)",
-                    fontSize: "0.85rem",
-                  }}
-                >
-                  <th style={{ padding: "10px" }}>ID</th>
-                  <th style={{ padding: "10px" }}>Customer</th>
-                  <th style={{ padding: "10px" }}>Status</th>
-                  <th style={{ padding: "10px" }}>Total</th>
+                <tr className="text-center border-bottom text-muted fs-sm">
+                  <th className="p-2">ID</th>
+                  <th className="p-2">Customer</th>
+                  <th className="p-2">Status</th>
+                  <th className="p-2">Total</th>
                 </tr>
               </thead>
               <tbody>
                 {recentOrders.map((order) => (
-                  <tr key={order.id} style={{ borderBottom: "1px solid #f9f9f9" }}>
-                    <td style={{ padding: "12px", fontWeight: 600 }}>{order.id}</td>
-                    <td style={{ padding: "12px" }}>{order.customer}</td>
-                    <td style={{ padding: "12px" }}>
-                      <span
-                        style={{
-                          fontSize: "0.75rem",
-                          fontWeight: 700,
-                          color: "var(--pb-primary)",
-                        }}
-                      >
+                  <tr key={order.id} className="border-bottom">
+                    <td className="p-2 fw-semibold">{order.id}</td>
+                    <td className="p-2">{order.customer}</td>
+                    <td className="p-2">
+                      <span className="fs-xs fw-bold text-primary">
                         {order.status}
                       </span>
                     </td>
-                    <td style={{ padding: "12px", fontWeight: 700 }}>
+                    <td className="p-2 fw-bold">
                       RM {parseFloat(order.total).toFixed(2)}
                     </td>
                   </tr>
@@ -162,29 +149,15 @@ export default function Dashboard() {
           )}
         </div>
         <div className="card">
-          <h3 style={{ marginBottom: "1.5rem" }}>Popular Items</h3>
+          <h3 className="mb-15">Popular Items</h3>
           {popularItems.length === 0 ? (
-            <p style={{ color: "var(--text-muted)" }}>Add menu items first.</p>
+            <p className="text-muted">Add menu items first.</p>
           ) : (
-            <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+            <div className="flex-column gap-1">
               {popularItems.map((item, index) => (
-                <div
-                  key={index}
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                  }}
-                >
+                <div key={index} className="flex-between flex-align-center">
                   <span>{item.name}</span>
-                  <span
-                    className="btn-primary"
-                    style={{
-                      padding: "2px 10px",
-                      fontSize: "0.8rem",
-                      borderRadius: "4px",
-                    }}
-                  >
+                  <span className="btn-primary fs-sm badge-pill">
                     Popular
                   </span>
                 </div>

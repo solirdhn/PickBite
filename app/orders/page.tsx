@@ -46,8 +46,8 @@ export default function OrdersPage() {
     { label: "Ready", value: "Ready" },
   ];
 
-  const activeFilteredOrders = filter === "all" 
-    ? activeOrders 
+  const activeFilteredOrders = filter === "all"
+    ? activeOrders
     : activeOrders.filter((o) => o.status === filter);
 
   return (
@@ -97,7 +97,7 @@ export default function OrdersPage() {
                         <div className="order-items-summary">{order.items}</div>
                       </div>
                     </div>
-                    
+
                     <div className="order-meta-info">
                       <div className="order-amount">RM {parseFloat(order.total.toString()).toFixed(2)}</div>
                       <div className="order-time-badge">
@@ -108,9 +108,11 @@ export default function OrdersPage() {
                     <div className="order-actions-row">
                       <span className={`badge-modern ${badgeClass}`}>{order.status}</span>
                       <select
+                        id={`status-${order.id}`}
                         className="status-select-modern"
                         value={order.status}
                         onChange={(e) => updateStatus(order.id, e.target.value)}
+                        aria-label={`Change status for order ${order.id}`}
                       >
                         <option value="Pending">Pending</option>
                         <option value="Preparing">Preparing</option>
@@ -162,7 +164,7 @@ export default function OrdersPage() {
               ))
             )}
           </div>
-          
+
           <button className="view-all-history-btn">
             View All Activity
           </button>
