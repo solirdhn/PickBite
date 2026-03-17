@@ -12,7 +12,7 @@ interface OrderItem {
 interface Order {
   id: string;
   customer: string;
-  type: 'Walk-in' | 'Dine out';
+  type: 'Dine In' | 'Take Away';
   tableNumber?: string;
   items: OrderItem[];
   total: number;
@@ -38,7 +38,7 @@ export default function OrdersPage() {
         { 
           id: "#PB-1001", 
           customer: "Alice Smith", 
-          type: "Walk-in",
+          type: "Dine In",
           tableNumber: "05",
           items: [
             { name: "Nasi Lemak", quantity: 2, price: 12.0 },
@@ -51,7 +51,7 @@ export default function OrdersPage() {
         { 
           id: "#PB-1002", 
           customer: "John Doe", 
-          type: "Dine out",
+          type: "Take Away",
           items: [
             { name: "Nasi Lemak", quantity: 1, price: 12.5 }
           ], 
@@ -62,7 +62,7 @@ export default function OrdersPage() {
         { 
           id: "#PB-1003", 
           customer: "Sarah Connor", 
-          type: "Walk-in",
+          type: "Dine In",
           tableNumber: "12",
           items: [
             { name: "Teh Tarik Kaw", quantity: 3, price: 3.5 }
@@ -74,7 +74,7 @@ export default function OrdersPage() {
         { 
           id: "#PB-1004", 
           customer: "Tony Stark", 
-          type: "Walk-in",
+          type: "Dine In",
           tableNumber: "01",
           items: [
             { name: "Nasi Lemak", quantity: 3, price: 12.0 },
@@ -87,7 +87,7 @@ export default function OrdersPage() {
         { 
           id: "#PB-1005", 
           customer: "Peter Parker", 
-          type: "Dine out",
+          type: "Take Away",
           items: [
             { name: "Nasi Lemak", quantity: 2, price: 12.5 }
           ], 
@@ -98,7 +98,7 @@ export default function OrdersPage() {
         { 
           id: "#PB-0999", 
           customer: "Bruce Wayne", 
-          type: "Walk-in",
+          type: "Dine In",
           tableNumber: "02",
           items: [
             { name: "Nasi Lemak", quantity: 1, price: 12.0 },
@@ -111,7 +111,7 @@ export default function OrdersPage() {
         { 
           id: "#PB-0998", 
           customer: "Diana Prince", 
-          type: "Dine out",
+          type: "Take Away",
           items: [
             { name: "Teh Tarik Kaw", quantity: 4, price: 3.5 }
           ], 
@@ -320,9 +320,9 @@ export default function OrdersPage() {
                       <div className="details-section">
                         <label>Service Type</label>
                         <p className="details-value">
-                          {selectedOrder.type === 'Walk-in' 
-                            ? `Walk-in (Table ${selectedOrder.tableNumber})` 
-                            : 'Dine out'}
+                          {selectedOrder.type === 'Dine In' 
+                            ? `Dine In (Table ${selectedOrder.tableNumber || 'N/A'})` 
+                            : 'Take Away'}
                         </p>
                       </div>
 

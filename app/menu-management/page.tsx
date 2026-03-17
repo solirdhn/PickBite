@@ -22,6 +22,7 @@ export default function MenuPage() {
   const [editItem, setEditItem] = useState<MenuItem | null>(null);
   const [basket, setBasket] = useState<Record<number, { item: MenuItem; quantity: number }>>({});
   const [showBasket, setShowBasket] = useState(false);
+  const [orderType, setOrderType] = useState<'Dine In' | 'Take Away'>('Dine In');
 
   useEffect(() => {
     const savedMenu = JSON.parse(localStorage.getItem("pb_menu_data") || "[]");
@@ -122,6 +123,32 @@ export default function MenuPage() {
     (sum, entry) => sum + entry.item.price * entry.quantity,
     0
   );
+
+  const placeOrder = () => {
+    if (Object.values(basket).length === 0) return;
+
+    const newOrder = {
+      id: `#PB-${Math.floor(1000 + Math.random() * 9000)}`,
+      customer: "Counter Customer", // Default for cashier orders
+      type: orderType,
+      items: Object.values(basket).map(entry => ({
+        name: entry.item.name,
+        quantity: entry.quantity,
+        price: entry.item.price
+      })),
+      total: totalAmount,
+      status: "Pending",
+      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    };
+
+    const savedOrders = JSON.parse(localStorage.getItem("pb_orders") || "[]");
+    const updatedOrders = [newOrder, ...savedOrders];
+    localStorage.setItem("pb_orders", JSON.stringify(updatedOrders));
+
+    alert(`Order ${newOrder.id} placed successfully!`);
+    setBasket({});
+    setShowBasket(false);
+  };
 
   const filteredMenu = menuItems.filter((item) => {
     const matchesCategory =
@@ -277,12 +304,27 @@ export default function MenuPage() {
               </div>
 
               <div className="basket-summary border-top pt-1">
+                <div className="order-type-toggle flex gap-05 mb-1">
+                  <button 
+                    className={`btn-primary flex-1 py-05 fs-xs ${orderType === 'Dine In' ? '' : 'btn-ghost'}`}
+                    onClick={() => setOrderType('Dine In')}
+                  >
+                    Dine In
+                  </button>
+                  <button 
+                    className={`btn-primary flex-1 py-05 fs-xs ${orderType === 'Take Away' ? '' : 'btn-ghost'}`}
+                    onClick={() => setOrderType('Take Away')}
+                  >
+                    Take Away
+                  </button>
+                </div>
+
                 <div className="flex flex-between fw-bold fs-md mb-1">
                   <span>Total</span>
                   <span className="text-primary">RM {totalAmount.toFixed(2)}</span>
                 </div>
                 <div className="flex flex-column gap-05">
-                  <button className="btn-primary w-full py-05 fs-sm" onClick={() => alert("Order Placed!")} disabled={Object.values(basket).length === 0}>
+                  <button className="btn-primary w-full py-05 fs-sm" onClick={placeOrder} disabled={Object.values(basket).length === 0}>
                     Place Order
                   </button>
                   <button className="btn-primary btn-ghost w-full py-05 fs-xs" onClick={() => setBasket({})} disabled={Object.values(basket).length === 0}>
