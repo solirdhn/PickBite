@@ -8,7 +8,7 @@ export default function Navbar() {
   const pathname = usePathname();
 
   const navItems = [
-    { name: "Dashboard", href: "/", icon: "fas fa-th-large" },
+    { name: "Home", href: "/", icon: "fas fa-th-large" },
     { name: "Orders", href: "/orders", icon: "fas fa-clipboard-list" },
     { name: "Menu", href: "/menu-management", icon: "fas fa-utensils" },
     { name: "Categories", href: "#", icon: "fas fa-tags" },
