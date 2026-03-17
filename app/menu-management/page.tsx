@@ -120,19 +120,14 @@ export default function MenuPage() {
               <h1>Your Restaurant Menu</h1>
               <p className="text-muted">Manage food items, prices, and availability.</p>
             </div>
-            <div className="flex gap-1 flex-align-center">
-              <button className="btn-primary" onClick={() => { setIsModalOpen(true); setEditItem(null); }}>
-                <i className="fas fa-plus"></i> Add New Item
-              </button>
-            </div>
           </div>
         </div>
       </div>
 
       <div className="menu-main-content-layout">
         <div className="menu-main-column">
-          <div className="search-section-horizontal">
-            <div className="filter-bar full-width-search">
+          <div className="search-section-horizontal flex flex-align-center gap-1">
+            <div className="filter-bar full-width-search flex-1">
               <i className="fas fa-search text-muted"></i>
               <input
                 type="text"
@@ -143,6 +138,9 @@ export default function MenuPage() {
                 aria-label="Search food items"
               />
             </div>
+            <button className="btn-primary" onClick={() => { setIsModalOpen(true); setEditItem(null); }}>
+              <i className="fas fa-plus"></i> Add New Item
+            </button>
           </div>
           
           <hr className="menu-divider m-0 mb-2" />

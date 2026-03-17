@@ -683,7 +683,7 @@ main.main-content .filter-bar {
     padding: 0.5rem 1.25rem;
     border: 1.5px solid var(--border-color);
     border-radius: var(--radius-md);
-    margin-bottom: 2rem;
+    margin-bottom: 0;
     display: flex;
     gap: 1rem;
     align-items: center;
@@ -701,6 +701,10 @@ main.main-content .filter-bar {
 
 .full-width-search {
     max-width: none !important;
+}
+
+.flex-1 {
+    flex: 1;
 }
 
 .menu-main-column {
@@ -945,7 +949,7 @@ main.main-content .menu-divider {
     border: none !important;
     height: 1px !important;
     background: var(--border-color) !important;
-    margin: 0.3125rem 0 0.375rem 0 !important; /* Top 5px, Bottom 6px to achieve specific 5px/7px shifts */
+    margin: 0.3125rem 0 1rem 0 !important; /* Top 5px, Bottom 16px (+10px total shift from original) */
     width: 100% !important;
     opacity: 0.6 !important;
 }
@@ -967,6 +971,7 @@ main.main-content .menu-sidebar-right {
     font-size: 1rem;
     font-weight: 700;
     color: var(--pb-dark);
+    margin-top: 7px; /* Move down by 7px as requested */
     margin-bottom: 1.2rem;
     padding-left: 0.5rem;
 }
