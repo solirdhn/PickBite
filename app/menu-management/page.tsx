@@ -278,11 +278,16 @@ export default function MenuPage() {
             </>
           ) : (
             <div className="basket-view p-05">
-              <div className="flex flex-between flex-align-center mb-1 pb-05 border-bottom">
+              <div className="flex flex-column mb-1 pb-05 border-bottom">
+                <div className="flex flex-between flex-align-center mb-05">
+                  <button className="btn-text fs-xs flex-align-center gap-02 p-0" onClick={() => setShowBasket(false)}>
+                    <i className="fas fa-arrow-left"></i> Categories
+                  </button>
+                  <button className="btn-icon btn-ghost p-0" onClick={() => setShowBasket(false)} title="Close Basket">
+                    <i className="fas fa-times fs-sm"></i>
+                  </button>
+                </div>
                 <h4 className="sidebar-title m-0 fs-md">Order Basket</h4>
-                <button className="btn-icon btn-ghost p-0" onClick={() => setShowBasket(false)} title="Close Basket">
-                  <i className="fas fa-times fs-sm"></i>
-                </button>
               </div>
               
               <div className="basket-items mb-15">
@@ -374,9 +379,6 @@ export default function MenuPage() {
                       </button>
                       <button className="btn-primary btn-ghost w-full py-05 fs-xs" onClick={() => setBasket({})} disabled={Object.values(basket).length === 0}>
                         Clear Basket
-                      </button>
-                      <button className="btn-text w-full fs-xs mt-05 flex-align-center justify-center gap-02" onClick={() => setShowBasket(false)}>
-                        <i className="fas fa-arrow-left"></i> Categories
                       </button>
                     </div>
                   </>
