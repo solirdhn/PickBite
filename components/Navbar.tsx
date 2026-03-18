@@ -47,6 +47,9 @@ export default function Navbar() {
           >
             <i className="fas fa-cog"></i>
           </Link>
+          <button className="notification-btn" title="Notifications">
+            <i className="fas fa-bell"></i>
+          </button>
           <button className="logout-btn" title="Logout" onClick={handleLogout}>
             <i className="fas fa-sign-out-alt"></i>
           </button>

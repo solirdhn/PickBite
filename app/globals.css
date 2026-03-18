@@ -724,7 +724,8 @@ button {
 }
 
 .logout-btn,
-.settings-btn-nav {
+.settings-btn-nav,
+.notification-btn {
     color: rgba(255, 255, 255, 0.6);
     font-size: 1.1rem;
     padding: 0.5rem;
@@ -737,7 +738,8 @@ button {
     border: none;
 }
 
-.settings-btn-nav:hover {
+.settings-btn-nav:hover,
+.notification-btn:hover {
     background: rgba(255, 255, 255, 0.1);
     color: white;
 }
