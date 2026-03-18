@@ -8,6 +8,7 @@ interface Order {
   customer: string;
   status: string;
   total: string;
+  type?: string;
 }
 
 interface MenuItem {
@@ -131,6 +132,7 @@ export default function Dashboard() {
                 <div key={order.id} className="list-row-modern">
                   <div className="col-info">
                     <div className="order-customer-name">{order.id}</div>
+                    <div className="order-id-subtext">{order.type || "Dine In"}</div>
                   </div>
                   <div className="col-status">
                     <span className={`status-badge-modern ${order.status.toLowerCase()}`}>
