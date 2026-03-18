@@ -130,8 +130,7 @@ export default function Dashboard() {
               {recentOrders.map((order) => (
                 <div key={order.id} className="list-row-modern">
                   <div className="col-info">
-                    <div className="order-customer-name">{order.customer}</div>
-                    <div className="order-id-subtext">{order.id}</div>
+                    <div className="order-customer-name">{order.id}</div>
                   </div>
                   <div className="col-status">
                     <span className={`status-badge-modern ${order.status.toLowerCase()}`}>

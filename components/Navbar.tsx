@@ -1,11 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import Image from "next/image";
+import { usePathname, useRouter } from "next/navigation";
 
 export default function Navbar() {
   const pathname = usePathname();
+  const router = useRouter();
 
   const navItems = [
     { name: "Home", href: "/", icon: "fas fa-th-large" },
@@ -13,6 +13,11 @@ export default function Navbar() {
     { name: "Menu", href: "/menu-management", icon: "fas fa-utensils" },
     { name: "Sales", href: "/sales", icon: "fas fa-chart-line" },
   ];
+
+  const handleLogout = () => {
+    localStorage.removeItem("pb_auth");
+    router.push("/login");
+  };
 
   return (
     <nav className="navbar">
@@ -35,12 +40,16 @@ export default function Navbar() {
         <div className="user-profile">
           <span className="user-name">Bite Bistro Merchant</span>
           <div className="user-avatar">BB</div>
-          <Link href="#" className="settings-btn-nav" title="Settings">
+          <Link
+            href="/settings"
+            className={`settings-btn-nav ${pathname === "/settings" ? "active" : ""}`}
+            title="Settings"
+          >
             <i className="fas fa-cog"></i>
           </Link>
-          <Link href="#" className="logout-btn" title="Logout">
+          <button className="logout-btn" title="Logout" onClick={handleLogout}>
             <i className="fas fa-sign-out-alt"></i>
-          </Link>
+          </button>
         </div>
       </div>
     </nav>

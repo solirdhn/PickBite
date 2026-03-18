@@ -718,6 +718,8 @@ button {
     align-items: center;
     justify-content: center;
     transition: all 0.2s ease;
+    background: transparent;
+    border: none;
 }
 
 .settings-btn-nav:hover {
@@ -1631,4 +1633,324 @@ main.main-content .category-vertical-tab:hover:not(.active) {
 .btn-primary-order-place:disabled {
     opacity: 0.6;
     cursor: not-allowed;
+}
+
+/* ============================================
+   AUTH LOADING
+   ============================================ */
+.auth-loading {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-main);
+}
+
+.auth-spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid var(--border-color);
+    border-top-color: var(--pb-primary);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* ============================================
+   LOGIN PAGE
+   ============================================ */
+.login-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-main);
+    background-image: radial-gradient(circle at 20% 20%, rgba(241,143,59,0.08) 0%, transparent 60%),
+                      radial-gradient(circle at 80% 80%, rgba(239,192,38,0.06) 0%, transparent 60%);
+}
+
+.login-card {
+    background: var(--bg-white);
+    border-radius: var(--radius-lg);
+    padding: 3rem 2.5rem;
+    width: 380px;
+    max-width: 92vw;
+    box-shadow: var(--shadow-lg);
+    border: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    animation: fadeInUp 0.4s ease;
+}
+
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.login-card.shake {
+    animation: shake 0.5s ease;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20% { transform: translateX(-8px); }
+    40% { transform: translateX(8px); }
+    60% { transform: translateX(-5px); }
+    80% { transform: translateX(5px); }
+}
+
+.login-logo {
+    margin-bottom: 0.5rem;
+}
+
+.login-title {
+    font-size: 1.6rem;
+    color: var(--pb-dark);
+    margin: 0;
+}
+
+.login-subtitle {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    margin: 0;
+    text-align: center;
+}
+
+.pin-dots {
+    display: flex;
+    gap: 1rem;
+    margin: 0.75rem 0;
+}
+
+.pin-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 2px solid var(--border-color);
+    background: transparent;
+    transition: all 0.2s ease;
+}
+
+.pin-dot.filled {
+    background: var(--pb-primary);
+    border-color: var(--pb-primary);
+    transform: scale(1.15);
+    box-shadow: 0 0 0 4px rgba(241, 143, 59, 0.15);
+}
+
+.pin-error {
+    font-size: 0.8rem;
+    color: var(--danger);
+    margin: 0;
+    font-weight: 600;
+}
+
+.pin-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+    width: 100%;
+    max-width: 260px;
+    margin-top: 0.5rem;
+}
+
+.pin-btn {
+    height: 60px;
+    border-radius: var(--radius-sm);
+    font-size: 1.4rem;
+    font-weight: 700;
+    font-family: 'Outfit', sans-serif;
+    background: var(--pb-accent);
+    color: var(--pb-dark);
+    border: 1.5px solid var(--border-color);
+    transition: all 0.15s ease;
+}
+
+.pin-btn:hover {
+    background: var(--pb-primary);
+    color: white;
+    border-color: var(--pb-primary);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-sm);
+}
+
+.pin-btn:active {
+    transform: scale(0.95);
+}
+
+.pin-delete {
+    color: var(--text-muted);
+    font-size: 1.1rem;
+}
+
+.pin-hint {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin: 0;
+    margin-top: 0.5rem;
+}
+
+/* ============================================
+   SETTINGS PAGE
+   ============================================ */
+.settings-page .welcome-header-container {
+    margin-top: -0.625rem;
+}
+
+.settings-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.settings-card {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.settings-section-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+}
+
+.settings-icon-box {
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    background: rgba(241, 143, 59, 0.1);
+    color: var(--pb-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+}
+
+.danger-icon {
+    background: rgba(235, 87, 87, 0.1);
+    color: var(--danger);
+}
+
+.danger-card {
+    border-color: rgba(235, 87, 87, 0.2);
+}
+
+.text-danger-title {
+    color: var(--danger);
+}
+
+.settings-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.settings-toggle-group {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.settings-toggle-btn {
+    flex: 1;
+    padding: 0.65rem 1rem;
+    border-radius: var(--radius-sm);
+    border: 1.5px solid var(--border-color);
+    background: white;
+    color: var(--text-muted);
+    font-weight: 600;
+    font-size: 0.875rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    transition: all 0.2s ease;
+}
+
+.settings-toggle-btn:hover {
+    border-color: var(--pb-primary);
+    color: var(--pb-primary);
+}
+
+.settings-toggle-btn.active {
+    border-color: var(--pb-primary);
+    background: rgba(241, 143, 59, 0.08);
+    color: var(--pb-primary);
+}
+
+.danger-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+}
+
+.btn-danger {
+    padding: 0.6rem 1.25rem;
+    border-radius: var(--radius-sm);
+    background: transparent;
+    border: 1.5px solid var(--danger);
+    color: var(--danger);
+    font-weight: 600;
+    font-size: 0.875rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.btn-danger:hover {
+    background: var(--danger);
+    color: white;
+}
+
+.btn-danger-confirm {
+    background: var(--danger);
+    color: white;
+    animation: pulse-danger 0.5s ease;
+}
+
+@keyframes pulse-danger {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.04); }
+}
+
+.input-error {
+    border-color: var(--danger) !important;
+}
+
+.input-error-msg {
+    font-size: 0.78rem;
+    color: var(--danger);
+    margin: 0.25rem 0 0 0;
+    font-weight: 600;
+}
+
+.settings-save-bar {
+    display: flex;
+    justify-content: flex-end;
+    padding-top: 0.5rem;
+}
+
+.settings-save-btn {
+    padding: 0.85rem 2.5rem;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    border-radius: var(--radius-sm);
+}
+
+.settings-btn-nav.active {
+    color: var(--pb-primary);
+    background: rgba(241, 143, 59, 0.12);
 }

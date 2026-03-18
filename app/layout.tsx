@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { Outfit, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
+import Navbar from "@/components/Navbar";
+import AuthGuard from "@/components/AuthGuard";
+import LayoutShell from "@/components/LayoutShell";
 
 const outfit = Outfit({
   variable: "--font-outfit",
@@ -17,8 +20,6 @@ export const metadata: Metadata = {
   description: "PickBite Merchant Management System",
 };
 
-import Navbar from "@/components/Navbar";
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -32,10 +33,13 @@ export default function RootLayout({
       <body
         className={`${outfit.variable} ${plusJakartaSans.variable} antialiased`}
       >
-        <div className="app-container">
-          <Navbar />
-          {children}
-        </div>
+        <AuthGuard>
+          <div className="app-container">
+            <LayoutShell navbar={<Navbar />}>
+              {children}
+            </LayoutShell>
+          </div>
+        </AuthGuard>
       </body>
     </html>
   );
