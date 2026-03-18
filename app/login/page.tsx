@@ -12,6 +12,16 @@ export default function LoginPage() {
   const [shake, setShake] = useState(false);
   const router = useRouter();
 
+  const [currentTime, setCurrentTime] = useState<Date | null>(null);
+  const [showPopup, setShowPopup] = useState(false);
+  const [loginTime, setLoginTime] = useState("");
+
+  useEffect(() => {
+    setCurrentTime(new Date());
+    const timer = setInterval(() => setCurrentTime(new Date()), 1000);
+    return () => clearInterval(timer);
+  }, []);
+
   useEffect(() => {
     // If already authenticated, redirect to dashboard
     if (localStorage.getItem("pb_auth") === "true") {
@@ -29,8 +39,14 @@ export default function LoginPage() {
       setTimeout(() => {
         const savedPin = localStorage.getItem("pb_pin") || CORRECT_PIN;
         if (newPin === savedPin) {
+          // Success
           localStorage.setItem("pb_auth", "true");
-          router.replace("/");
+          const timeString = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+          setLoginTime(timeString);
+          setShowPopup(true);
+          setTimeout(() => {
+            router.push("/");
+          }, 2500);
         } else {
           setShake(true);
           setError("Incorrect PIN. Try again.");
@@ -53,43 +69,73 @@ export default function LoginPage() {
   return (
     <div className="login-page">
       <div className={`login-card ${shake ? "shake" : ""}`}>
-        <div className="login-logo">
-          <Image
-            src="/PickBiteLogo.png"
-            alt="PickBite Logo"
-            width={180}
-            height={90}
-            priority
-          />
-        </div>
-        <h1 className="login-title">Welcome back</h1>
-        <p className="login-subtitle">Enter your PIN to access the dashboard</p>
 
-        <div className="pin-dots">
-          {[0, 1, 2, 3].map((i) => (
-            <div key={i} className={`pin-dot ${i < pin.length ? "filled" : ""}`} />
-          ))}
-        </div>
-
-        {error && <p className="pin-error">{error}</p>}
-
-        <div className="pin-grid">
-          {digits.map((d, idx) => {
-            if (d === "") return <div key={idx} />;
-            return (
-              <button
-                key={idx}
-                className={`pin-btn ${d === "⌫" ? "pin-delete" : ""}`}
-                onClick={() => d === "⌫" ? handleDelete() : handleDigit(d)}
-              >
-                {d}
-              </button>
-            );
-          })}
+        {/* Left Side: Info */}
+        <div className="login-horizontal-info">
+          <div className="login-logo">
+            <Image
+              src="/PickBiteLogo.png"
+              alt="PickBite Logo"
+              width={350}
+              height={175}
+              priority
+            />
+            <h1 className="page-brand-name login-brand-text">PickBite</h1>
+            <p className="login-slogan">Click. Pick. Eat</p>
+          </div>
+          {currentTime && (
+            <div className="login-clock">
+              {currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+            </div>
+          )}
+          <h1 className="login-title">Welcome back</h1>
+          <p className="login-subtitle">
+            Enter your PIN to access the<br />
+            dashboard
+          </p>
         </div>
 
-        <p className="pin-hint">Default PIN: <strong>1234</strong></p>
+        {/* Center Divider */}
+        <div className="login-horizontal-divider"></div>
+
+        {/* Right Side: PIN Entry */}
+        <div className="login-horizontal-pin">
+          <div className="pin-dots">
+            {[0, 1, 2, 3].map((i) => (
+              <div key={i} className={`pin-dot ${i < pin.length ? "filled" : ""}`} />
+            ))}
+          </div>
+
+          {error && <p className="pin-error">{error}</p>}
+
+          <div className="pin-grid">
+            {digits.map((d, idx) => {
+              if (d === "") return <div key={idx} />;
+              return (
+                <button
+                  key={idx}
+                  className={`pin-btn ${d === "⌫" ? "pin-delete" : ""}`}
+                  onClick={() => d === "⌫" ? handleDelete() : handleDigit(d)}
+                >
+                  {d}
+                </button>
+              );
+            })}
+          </div>
+
+          <p className="pin-hint">Default PIN: <strong>1234</strong></p>
+        </div>
       </div>
+
+      {showPopup && (
+        <div className="login-popup-overlay">
+          <div className="login-popup-card">
+            <i className="fas fa-check-circle popup-icon"></i>
+            <h2>Login Successful</h2>
+            <p className="popup-message">Siti Solihah have clock in <strong>{loginTime}</strong></p>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
