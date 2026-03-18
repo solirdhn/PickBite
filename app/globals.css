@@ -247,6 +247,25 @@ button {
     gap: 1.5rem;
 }
 
+.grid-1-1 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+
+.list-header-modern.grid-reservations,
+.list-row-modern.grid-reservations {
+    grid-template-columns: 1.5fr 1fr 1fr 1fr;
+    gap: 0.5rem;
+}
+
+.form-input-modern {
+    border: 1.5px solid var(--border-color);
+    padding: 0.8rem;
+    outline: none;
+}
+
+
 .flex-column {
     display: flex;
     flex-direction: column;
@@ -337,7 +356,9 @@ button {
 
 .dashboard-page .welcome-header-container,
 .menu-page .welcome-header-container,
-.orders-page .welcome-header-container {
+.orders-page .welcome-header-container,
+.sales-page .welcome-header-container,
+.reservation-page .welcome-header-container {
     margin-top: -0.625rem;
     /* Moved up total 30px at user request */
 }
