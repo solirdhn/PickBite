@@ -1667,9 +1667,10 @@ main.main-content .category-vertical-tab:hover:not(.active) {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--bg-main);
-    background-image: radial-gradient(circle at 20% 20%, rgba(241,143,59,0.08) 0%, transparent 60%),
-                      radial-gradient(circle at 80% 80%, rgba(239,192,38,0.06) 0%, transparent 60%);
+    background-color: var(--pb-accent);
+    background-image: 
+        radial-gradient(circle at 15% 15%, rgba(241, 143, 59, 0.12) 0%, transparent 60%),
+        radial-gradient(circle at 85% 85%, rgba(239, 192, 38, 0.1) 0%, transparent 60%);
 }
 
 .login-card {
