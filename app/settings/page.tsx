@@ -5,11 +5,23 @@ import Image from "next/image";
 
 interface Settings {
   restaurantName: string;
+  contactNumber: string;
+  email: string;
+  address: string;
+  description: string;
+  openingTime: string;
+  closingTime: string;
   defaultOrderType: "Dine In" | "Take Away";
 }
 
 const DEFAULT_SETTINGS: Settings = {
   restaurantName: "Bite Bistro",
+  contactNumber: "+1 (555) 0123",
+  email: "hello@bitebistro.com",
+  address: "123 Gourmet Ave, Foodie City, FC 12345",
+  description: "A premium dining experience for food enthusiasts.",
+  openingTime: "08:00",
+  closingTime: "22:00",
   defaultOrderType: "Dine In",
 };
 
@@ -24,8 +36,8 @@ export default function SettingsPage() {
     if (stored) {
       const parsed = JSON.parse(stored);
       setSettings({
-        restaurantName: parsed.restaurantName || DEFAULT_SETTINGS.restaurantName,
-        defaultOrderType: parsed.defaultOrderType || DEFAULT_SETTINGS.defaultOrderType,
+        ...DEFAULT_SETTINGS,
+        ...parsed,
       });
     }
   }, []);
@@ -110,6 +122,72 @@ export default function SettingsPage() {
                   onChange={(e) => setSettings({ ...settings, restaurantName: e.target.value })}
                   placeholder="e.g. Bite Bistro"
                 />
+              </div>
+
+              <div className="grid-1-1">
+                <div className="form-group">
+                  <label htmlFor="contactNumber">Merchant Contact Number</label>
+                  <input
+                    id="contactNumber"
+                    type="text"
+                    value={settings.contactNumber}
+                    onChange={(e) => setSettings({ ...settings, contactNumber: e.target.value })}
+                    placeholder="e.g. +1 (555) 0123"
+                  />
+                </div>
+                <div className="form-group">
+                  <label htmlFor="email">Public Email Address</label>
+                  <input
+                    id="email"
+                    type="email"
+                    value={settings.email}
+                    onChange={(e) => setSettings({ ...settings, email: e.target.value })}
+                    placeholder="e.g. hello@bitebistro.com"
+                  />
+                </div>
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="address">Restaurant Address</label>
+                <textarea
+                  id="address"
+                  rows={2}
+                  value={settings.address}
+                  onChange={(e) => setSettings({ ...settings, address: e.target.value })}
+                  placeholder="Street, City, Postcode"
+                ></textarea>
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="description">Restaurant Description</label>
+                <textarea
+                  id="description"
+                  rows={3}
+                  value={settings.description}
+                  onChange={(e) => setSettings({ ...settings, description: e.target.value })}
+                  placeholder="A brief bio of your restaurant"
+                ></textarea>
+              </div>
+
+              <div className="grid-1-1">
+                <div className="form-group">
+                  <label htmlFor="openingTime">Opening Time</label>
+                  <input
+                    id="openingTime"
+                    type="time"
+                    value={settings.openingTime}
+                    onChange={(e) => setSettings({ ...settings, openingTime: e.target.value })}
+                  />
+                </div>
+                <div className="form-group">
+                  <label htmlFor="closingTime">Closing Time</label>
+                  <input
+                    id="closingTime"
+                    type="time"
+                    value={settings.closingTime}
+                    onChange={(e) => setSettings({ ...settings, closingTime: e.target.value })}
+                  />
+                </div>
               </div>
             </div>
           </div>
