@@ -796,6 +796,9 @@ button {
 
 /* Main Tab Navigation (Underlined) */
 .active-switch-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     margin-bottom: 2rem;
     border-bottom: 1px solid var(--border-color);
 }
@@ -2209,16 +2212,10 @@ main.main-content .category-vertical-tab:hover:not(.active) {
 
 /* Notifications Page Styles */
 .notifications-list-wrapper {
-    max-width: 900px;
-    margin: 0 auto;
+    margin: 0;
 }
 
-.notifications-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 2rem;
-}
+.mb-05 { margin-bottom: 0.5rem !important; }
 
 .notifications-list {
     display: flex;

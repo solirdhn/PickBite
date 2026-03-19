@@ -70,8 +70,16 @@ const INITIAL_NOTIFICATIONS: Notification[] = [
   },
 ];
 
+const NOTIFICATION_TABS = [
+  { id: "all", label: "All Activities", icon: "fa-history" },
+  { id: "orders", label: "Orders", icon: "fa-shopping-bag" },
+  { id: "staff", label: "Staff Tracking", icon: "fa-user-clock" },
+  { id: "system", label: "System Updates", icon: "fa-info-circle" },
+];
+
 export default function NotificationsPage() {
   const [notifications, setNotifications] = useState<Notification[]>(INITIAL_NOTIFICATIONS);
+  const [activeTab, setActiveTab] = useState("all");
 
   const markAllAsRead = () => {
     setNotifications(notifications.map(n => ({ ...n, unread: false })));
@@ -92,6 +100,14 @@ export default function NotificationsPage() {
     }
   };
 
+  const filteredNotifications = notifications.filter(noti => {
+    if (activeTab === "all") return true;
+    if (activeTab === "orders" && (noti.type === "ORDER" || noti.type === "READY")) return true;
+    if (activeTab === "staff" && noti.type === "STAFF") return true;
+    if (activeTab === "system" && noti.type === "SYSTEM") return true;
+    return false;
+  });
+
   return (
     <main className="main-content notifications-page">
       <div className="welcome-header-container">
@@ -111,19 +127,31 @@ export default function NotificationsPage() {
         </section>
       </div>
 
-      <div className="notifications-list-wrapper mt-1">
-        <div className="notifications-header">
-          <h3 className="m-0">Activity Feed</h3>
-          {notifications.some(n => n.unread) && (
-            <button className="btn-mark-read" onClick={markAllAsRead}>
-              <i className="fas fa-check-double mr-1"></i> Mark all as read
-            </button>
-          )}
+      <div className="active-switch-container">
+        <div className="tab-list-modern">
+          {NOTIFICATION_TABS.map((tab) => (
+            <div
+              key={tab.id}
+              className={`tab-item-modern ${activeTab === tab.id ? "active" : ""}`}
+              onClick={() => setActiveTab(tab.id)}
+            >
+              <i className={`fas ${tab.icon}`}></i>
+              {tab.label}
+            </div>
+          ))}
         </div>
+        {filteredNotifications.some(n => n.unread) && (
+          <button className="btn-mark-read mb-05" onClick={markAllAsRead}>
+            <i className="fas fa-check-double mr-1"></i> Mark all as read
+          </button>
+        )}
+      </div>
+
+      <div className="notifications-list-wrapper mt-1">
 
         <div className="notifications-list">
-          {notifications.length > 0 ? (
-            notifications.map((noti) => (
+          {filteredNotifications.length > 0 ? (
+            filteredNotifications.map((noti) => (
               <div 
                 key={noti.id} 
                 className={`notification-item ${noti.unread ? 'unread' : ''}`}
@@ -144,7 +172,7 @@ export default function NotificationsPage() {
           ) : (
             <div className="empty-state text-center p-3 opacity-50">
               <i className="fas fa-bell-slash fs-xl mb-1"></i>
-              <p>No notifications yet.</p>
+              <p>No notifications in this category.</p>
             </div>
           )}
         </div>
