@@ -48,9 +48,13 @@ export default function Navbar() {
           >
             <i className="fas fa-cog"></i>
           </Link>
-          <button className="notification-btn" title="Notifications">
+          <Link
+            href="/notifications"
+            className={`notification-btn ${pathname === "/notifications" ? "active" : ""}`}
+            title="Notifications"
+          >
             <i className="fas fa-bell"></i>
-          </button>
+          </Link>
           <button className="logout-btn" title="Logout" onClick={handleLogout}>
             <i className="fas fa-sign-out-alt"></i>
           </button>
