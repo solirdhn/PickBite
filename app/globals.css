@@ -814,6 +814,10 @@ button {
     transition: all 0.2s ease;
 }
 
+.tab-item-modern i {
+    margin-right: 0.75rem;
+}
+
 .tab-item-modern:hover {
     color: var(--pb-primary);
 }

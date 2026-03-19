@@ -81,7 +81,7 @@ export default function SettingsPage() {
               className={`tab-item-modern ${activeTab === tab.id ? "active" : ""}`}
               onClick={() => setActiveTab(tab.id as any)}
             >
-              <i className={`fas ${tab.icon}`} style={{ marginRight: "0.75rem" }}></i>
+              <i className={`fas ${tab.icon}`}></i>
               {tab.label}
             </div>
           ))}
