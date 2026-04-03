@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 
 interface MenuItem {
-  id: number;
+  id: string;
   name: string;
   category: string;
   price: number;
@@ -20,82 +20,117 @@ export default function MenuPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isMoreOpen, setIsMoreOpen] = useState(false);
   const [editItem, setEditItem] = useState<MenuItem | null>(null);
-  const [basket, setBasket] = useState<Record<number, { item: MenuItem; quantity: number }>>({});
+  const [basket, setBasket] = useState<Record<string, { item: MenuItem; quantity: number }>>({});
   const [showBasket, setShowBasket] = useState(false);
   const [orderType, setOrderType] = useState<'Dine In' | 'Take Away'>('Dine In');
   const [paymentMethod, setPaymentMethod] = useState<string | null>(null);
   const [successOrder, setSuccessOrder] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSyncing, setIsSyncing] = useState(false);
 
-  useEffect(() => {
-    const savedMenu = JSON.parse(localStorage.getItem("pb_menu_data") || "[]");
-    const menuVersion = localStorage.getItem("pb_menu_v");
-    const CURRENT_VERSION = "1.6"; // Force fresh load
-    
-    console.log("Menu Version Check:", { current: CURRENT_VERSION, stored: menuVersion });
-
-    if (savedMenu.length === 0 || menuVersion !== CURRENT_VERSION) {
-      const initialMenu = [
-        { id: 1, name: "Nasi Lemak", category: "Main Course", price: 12.5, desc: "Fragrant rice with sambal, chicken, and egg.", image: "https://www.healthygfasian.com/wp-content/uploads/2023/08/GF-Nasi-Lemak.jpg", isPopular: true },
-        { id: 2, name: "Teh Tarik Kaw", category: "Beverages", price: 3.5, desc: "Pulled milk tea, extra frothy.", image: "https://thesmartlocal.my/wp-content/uploads/2025/04/TEH-TARIK-1.jpg", isPopular: true },
-        { id: 3, name: "Satay Ayam (6 pcs)", category: "Main Course", price: 9.0, desc: "Grilled chicken skewers with peanut sauce.", image: "https://i.ytimg.com/vi/20Twt_s9Jh8/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLBBSaj6BOBTJwP4jIqurtud_zcBOA", isPopular: true },
-        { id: 4, name: "Mee Goreng Mamak", category: "Main Course", price: 8.5, desc: "Spicy stir-fried noodles with tofu and egg.", image: "https://images.unsplash.com/photo-1585032226651-759b368d7246?w=500&auto=format&fit=crop", isPopular: false },
-        { id: 5, name: "Chicken Rice", category: "Main Course", price: 10.5, desc: "Hainanese style steamed chicken with rice.", image: "https://images.deliveryhero.io/image/fd-my/LH/v4un-listing.jpg", isPopular: false },
-        { id: 6, name: "Milo Dinosaur", category: "Beverages", price: 5.0, desc: "Iced Milo topped with extra Milo powder.", image: "https://www.wandercooks.com/wp-content/uploads/2023/03/malaysian-milo-dinosaur-3-683x1024.jpg", isPopular: true },
-        { id: 7, name: "Iced Lemon Tea", category: "Beverages", price: 4.0, desc: "Refreshing tea with a squeeze of fresh lemon.", image: "https://aromaticessence.co/wp-content/uploads/2016/03/image55.jpeg", isPopular: false },
-        { id: 8, name: "Cendol", category: "Dessert", price: 4.5, desc: "Shaved ice with green jelly and coconut milk.", image: "https://www.saveur.com/uploads/2019/04/01/7SD4OZMRAULKZD6Q7HO6XSBJVY.jpg?auto=webp", isPopular: false },
-        { id: 9, name: "ABC (Air Batu Campur)", category: "Dessert", price: 6.0, desc: "Shaved ice with sweet syrup and toppings.", image: "https://malay-cuisines.neocities.org/abc3.jpg", isPopular: false },
-        { id: 10, name: "Roti Canai", category: "Breakfast", price: 2.5, desc: "Crispy flatbread served with dhal.", image: "https://www.rotinrice.com/wp-content/uploads/2011/04/RotiCanai-1.jpg", isPopular: true },
-      ];
-      setMenuItems(initialMenu);
-      localStorage.setItem("pb_menu_data", JSON.stringify(initialMenu));
-      localStorage.setItem("pb_menu_v", CURRENT_VERSION);
-      // Clean up old key
-      localStorage.removeItem("pb_menu");
-      localStorage.removeItem("pb_menu_version");
-    } else {
-      setMenuItems(savedMenu);
-    }
-  }, []);
-
-  const resetMenu = () => {
-    if (confirm("This will reset your menu to the default items. All your custom changes will be lost. Proceed?")) {
-      localStorage.removeItem("pb_menu");
-      localStorage.removeItem("pb_menu_version");
-      window.location.reload();
+  // Fetch menu from the database
+  const fetchMenu = async () => {
+    setIsLoading(true);
+    try {
+      const resp = await fetch("/api/products");
+      const data = await resp.json();
+      if (Array.isArray(data)) {
+        // Map Prisma structure (with nested category) to our flat MenuItem structure
+        setMenuItems(data.map((item: any) => ({
+          id: item.id,
+          name: item.name,
+          category: item.category.name,
+          price: item.price,
+          desc: item.desc || "",
+          image: item.image || "",
+          isPopular: item.isPopular
+        })));
+      }
+    } catch (e) {
+      console.error("Failed to load menu from backend:", e);
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const handleSave = (e: React.FormEvent<HTMLFormElement>) => {
+  useEffect(() => {
+    fetchMenu();
+  }, []);
+
+  // Helpful utility to migrate old localStorage data to the new database
+  const migrateLocalData = async () => {
+    const localData = JSON.parse(localStorage.getItem("pb_menu_data") || "[]");
+    if (localData.length === 0) {
+      alert("No local data found to migrate.");
+      return;
+    }
+
+    if (!confirm(`Found ${localData.length} items in your browser. Sync them to the cloud database?`)) return;
+
+    setIsSyncing(true);
+    try {
+      for (const item of localData) {
+        await fetch("/api/products", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name: item.name,
+            price: item.price,
+            categoryName: item.category,
+            desc: item.desc,
+            image: item.image,
+            isPopular: item.isPopular
+          })
+        });
+      }
+      alert("Migration complete! Your menu is now in the cloud.");
+      fetchMenu();
+    } catch (e) {
+      alert("Migration failed. Please check your connection.");
+    } finally {
+      setIsSyncing(false);
+    }
+  };
+
+  const handleSave = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    const newItem: MenuItem = {
-      id: editItem ? editItem.id : Date.now(),
+    
+    const payload = {
+      id: editItem ? editItem.id : undefined,
       name: formData.get("foodName") as string,
-      category: formData.get("foodCategory") as string,
+      categoryName: formData.get("foodCategory") as string,
       price: parseFloat(formData.get("foodPrice") as string),
       desc: formData.get("foodDesc") as string,
       image: formData.get("foodImage") as string,
       isPopular: formData.get("isPopular") === "on",
     };
 
-    let updated;
-    if (editItem) {
-      updated = menuItems.map((i) => (i.id === editItem.id ? newItem : i));
-    } else {
-      updated = [...menuItems, newItem];
-    }
+    try {
+      const resp = await fetch("/api/products", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
 
-    setMenuItems(updated);
-    localStorage.setItem("pb_menu_data", JSON.stringify(updated));
-    setIsModalOpen(false);
-    setEditItem(null);
+      if (resp.ok) {
+        setIsModalOpen(false);
+        setEditItem(null);
+        fetchMenu(); // Refresh from DB
+      }
+    } catch (e) {
+      alert("Failed to save item to database.");
+    }
   };
 
-  const deleteItem = (id: number) => {
-    if (confirm("Are you sure you want to delete this item?")) {
-      const updated = menuItems.filter((i) => i.id !== id);
-      setMenuItems(updated);
-      localStorage.setItem("pb_menu_data", JSON.stringify(updated));
+  const deleteItem = async (id: string) => {
+    if (confirm("Are you sure you want to delete this item from the database?")) {
+      try {
+        const resp = await fetch(`/api/products?id=${id}`, { method: "DELETE" });
+        if (resp.ok) fetchMenu();
+      } catch (e) {
+        alert("Failed to delete item.");
+      }
     }
   };
 
@@ -113,7 +148,7 @@ export default function MenuPage() {
     setShowBasket(true);
   };
 
-  const removeFromBasket = (id: number) => {
+  const removeFromBasket = (id: string) => {
     setBasket((prev) => {
       const newBasket = { ...prev };
       delete newBasket[id];
@@ -126,37 +161,44 @@ export default function MenuPage() {
     0
   );
 
-  const placeOrder = () => {
+  const placeOrder = async () => {
     if (Object.values(basket).length === 0) return;
 
-    const newOrder = {
-      id: `#PB-${Math.floor(1000 + Math.random() * 9000)}`,
-      customer: "Counter Customer", // Default for cashier orders
-      type: orderType,
-      items: Object.values(basket).map(entry => ({
-        name: entry.item.name,
-        quantity: entry.quantity,
-        price: entry.item.price
-      })),
+    const payload = {
+      customerName: "Counter Customer",
+      orderType: orderType,
       total: totalAmount,
       paymentMethod: paymentMethod,
       status: "Pending",
-      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      items: Object.values(basket).map(entry => ({
+        productId: entry.item.id,
+        name: entry.item.name,
+        quantity: entry.quantity,
+        price: entry.item.price
+      }))
     };
 
-    const savedOrders = JSON.parse(localStorage.getItem("pb_orders") || "[]");
-    const updatedOrders = [newOrder, ...savedOrders];
-    localStorage.setItem("pb_orders", JSON.stringify(updatedOrders));
+    try {
+      const resp = await fetch("/api/orders", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
 
-    setSuccessOrder(newOrder.id);
-    setBasket({});
-    
-    // Auto-close success message after 5 seconds
-    setTimeout(() => {
-      setSuccessOrder(null);
-      setShowBasket(false);
-      setPaymentMethod(null);
-    }, 5000);
+      if (resp.ok) {
+        const result = await resp.json();
+        setSuccessOrder(`Order #${result.orderNumber}`); // Beautiful sequential ID
+        setBasket({});
+        
+        setTimeout(() => {
+          setSuccessOrder(null);
+          setShowBasket(false);
+          setPaymentMethod(null);
+        }, 5000);
+      }
+    } catch (e) {
+      alert("Failed to place order in database.");
+    }
   };
 
   const filteredMenu = menuItems.filter((item) => {
@@ -184,9 +226,22 @@ export default function MenuPage() {
           />
         </div>
         <div className="welcome-divider"></div>
-        <section className="welcome-section">
-          <h1>Your Restaurant Menu</h1>
-          <p className="text-muted">Manage food items, prices, and availability.</p>
+        <section className="welcome-section flex-1">
+          <div className="flex flex-between flex-align-center">
+            <div>
+              <h1>Your Restaurant Menu</h1>
+              <p className="text-muted">Manage food items, prices, and availability.</p>
+            </div>
+            {/* Migration Button - Only shows if there is local data to sync */}
+            <button 
+              className={`btn-primary btn-ghost fs-xs py-05 ${isSyncing ? 'opacity-50' : ''}`}
+              onClick={migrateLocalData}
+              disabled={isSyncing}
+            >
+              <i className={`fas ${isSyncing ? 'fa-spinner fa-spin' : 'fa-cloud-upload-alt'}`}></i> 
+              {isSyncing ? ' Syncing...' : ' Sync Local to Cloud'}
+            </button>
+          </div>
         </section>
       </div>
 
@@ -211,35 +266,41 @@ export default function MenuPage() {
 
           <hr className="menu-divider m-0 mb-2" />
 
-          <div className="food-grid">
-            {filteredMenu.length === 0 ? (
-              <div className="p-3 text-center text-muted grid-all">
-                <i className="fas fa-search fs-xl opacity-10"></i>
-                <p className="mt-1">No items found matching your criteria.</p>
-              </div>
-            ) : (
-              filteredMenu.map((item) => (
-                <div key={item.id} className="card food-card">
-                  <img src={item.image || "https://via.placeholder.com/300x180?text=No+Image"} alt={item.name} className="food-image" />
-                  <div className="food-info">
-                    <span className="category">{item.category}</span>
-                    <h3>{item.name}</h3>
-                    <p className="fs-sm text-muted h-40 overflow-hidden">{item.desc}</p>
-                  </div>
-                  <div className="food-footer">
-                    <span className="price">RM {parseFloat(item.price.toString()).toFixed(2)}</span>
-                    <div className="actions">
-                      <button className="btn-icon" onClick={() => addToBasket(item)} aria-label="Quick Order" title="Add to Order (Take Away)">
-                        <i className="fas fa-shopping-basket"></i>
-                      </button>
-                      <button className="btn-icon" onClick={() => { setEditItem(item); setIsModalOpen(true); }} aria-label="Edit Item" title="Edit Item"><i className="fas fa-edit"></i></button>
-                      <button className="btn-icon btn-delete" onClick={() => deleteItem(item.id)} aria-label="Delete Item" title="Delete Item"><i className="fas fa-trash"></i></button>
+          {isLoading ? (
+            <div className="flex-center py-5 text-muted">
+              <i className="fas fa-spinner fa-spin fs-xl mr-1"></i> Loading your menu...
+            </div>
+          ) : (
+            <div className="food-grid">
+              {filteredMenu.length === 0 ? (
+                <div className="p-3 text-center text-muted grid-all">
+                  <i className="fas fa-search fs-xl opacity-10"></i>
+                  <p className="mt-1">No items found matching your criteria.</p>
+                </div>
+              ) : (
+                filteredMenu.map((item) => (
+                  <div key={item.id} className="card food-card">
+                    <img src={item.image || "https://via.placeholder.com/300x180?text=No+Image"} alt={item.name} className="food-image" />
+                    <div className="food-info">
+                      <span className="category">{item.category}</span>
+                      <h3>{item.name}</h3>
+                      <p className="fs-sm text-muted h-40 overflow-hidden">{item.desc}</p>
+                    </div>
+                    <div className="food-footer">
+                      <span className="price">RM {parseFloat(item.price.toString()).toFixed(2)}</span>
+                      <div className="actions">
+                        <button className="btn-icon" onClick={() => addToBasket(item)} aria-label="Quick Order" title="Add to Order (Take Away)">
+                          <i className="fas fa-shopping-basket"></i>
+                        </button>
+                        <button className="btn-icon" onClick={() => { setEditItem(item); setIsModalOpen(true); }} aria-label="Edit Item" title="Edit Item"><i className="fas fa-edit"></i></button>
+                        <button className="btn-icon btn-delete" onClick={() => deleteItem(item.id)} aria-label="Delete Item" title="Delete Item"><i className="fas fa-trash"></i></button>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))
-            )}
-          </div>
+                ))
+              )}
+            </div>
+          )}
         </div>
         <aside className="menu-sidebar-right">
           {!showBasket ? (
@@ -321,7 +382,7 @@ export default function MenuPage() {
                 {successOrder ? (
                   <div className="success-message-basket">
                     <i className="fas fa-check-circle"></i>
-                    <p className="fw-bold">Order {successOrder} is placed</p>
+                    <p className="fw-bold">{successOrder} is placed</p>
                     <button className="btn-text fs-xs mt-05" onClick={() => { setSuccessOrder(null); setShowBasket(false); }}>
                       Done
                     </button>

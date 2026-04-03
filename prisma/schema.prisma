@@ -1,0 +1,57 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Category {
+  id        String    @id @default(cuid())
+  name      String    @unique
+  products  Product[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Product {
+  id          String   @id @default(cuid())
+  name        String
+  price       Float
+  desc        String?
+  image       String?
+  isPopular   Boolean  @default(false)
+  categoryId  String
+  category    Category @relation(fields: [categoryId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  OrderLine   OrderLine[]
+}
+
+model Order {
+  id            String      @id @default(cuid())
+  orderNumber   Int         @unique @default(autoincrement())
+  customerName  String      @default("Counter Customer")
+  orderType     String      @default("Dine In") // "Dine In" or "Take Away"
+  total         Float
+  paymentMethod String?     // "qr", "credit", "debit", "cash"
+  status        String      @default("Pending") // "Pending", "Completed", "Cancelled"
+  lines         OrderLine[]
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+}
+
+model OrderLine {
+  id        String  @id @default(cuid())
+  orderId   String
+  order     Order   @relation(fields: [orderId], references: [id])
+  productId String? // Product can be null if product is deleted but order persists
+  product   Product? @relation(fields: [productId], references: [id])
+  name      String  // Captured name at time of order
+  quantity  Int
+  price     Float   // Captured price at time of order
+}

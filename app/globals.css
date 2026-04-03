@@ -2542,3 +2542,19 @@ main.main-content .category-vertical-tab:hover:not(.active) {
     background: rgba(255, 255, 255, 0.1) !important;
     color: white !important;
 }
+
+/* Sales Breakdown Progress Bars */
+.item-bar-container {
+    height: 8px;
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 100px;
+    overflow: hidden;
+    width: 100%;
+}
+
+.item-bar {
+    height: 100%;
+    background: var(--pb-primary);
+    width: var(--progress-width, 0%);
+    transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
