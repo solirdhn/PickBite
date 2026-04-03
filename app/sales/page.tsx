@@ -240,15 +240,14 @@ export default function SalesPage() {
           <div className="modal-content receipt-modal">
             <div className="receipt-container">
               <div className="receipt-header">
-                <div className="flex-align-center flex-justify-center gap-02 mb-02">
+                <div className="flex-align-center flex-justify-center mb-05">
                   <Image
                     src="/PickBiteLogo.png"
                     alt="PickBite Logo"
-                    width={140}
-                    height={70}
+                    width={290}
+                    height={145}
                     className="receipt-logo-img"
                   />
-                  <div className="receipt-logo-text">PickBite</div>
                 </div>
                 <p className="receipt-report-title">Shift Closing Report</p>
               </div>
