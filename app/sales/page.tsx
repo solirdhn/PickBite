@@ -34,7 +34,7 @@ export default function SalesPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [realOrders, setRealOrders] = useState<any[]>([]);
 
-  // Refs to manage progress bars without using inline 'style' props (to satisfy linter)
+  // Refs for progress bars to avoid inline style warnings while keeping design dynamic
   const qrRef = useRef<HTMLDivElement>(null);
   const creditRef = useRef<HTMLDivElement>(null);
   const debitRef = useRef<HTMLDivElement>(null);
@@ -67,14 +67,12 @@ export default function SalesPage() {
           else breakdown.cash += amount;
         });
 
-        const newData = {
+        setSalesData({
           totalSales: totalRevenue,
           orderCount: orderCount,
           averageOrderValue: avgValue,
           breakdown
-        };
-
-        setSalesData(newData);
+        });
 
         const todayStr = new Date().toLocaleDateString('en-MY', {
           weekday: 'short', day: 'numeric', month: 'short'
@@ -98,7 +96,7 @@ export default function SalesPage() {
     fetchData();
   }, []);
 
-  // Update bar widths using direct DOM manipulation to avoid inline 'style' warnings
+  // Update widths directly to satisfy "no-inline-style" linting without losing functionality
   useEffect(() => {
     const total = salesData.totalSales;
     if (total > 0) {
@@ -106,10 +104,6 @@ export default function SalesPage() {
       if (creditRef.current) creditRef.current.style.width = `${(salesData.breakdown.credit / total) * 100}%`;
       if (debitRef.current) debitRef.current.style.width = `${(salesData.breakdown.debit / total) * 100}%`;
       if (cashRef.current) cashRef.current.style.width = `${(salesData.breakdown.cash / total) * 100}%`;
-    } else {
-      [qrRef, creditRef, debitRef, cashRef].forEach(ref => {
-        if (ref.current) ref.current.style.width = '0%';
-      });
     }
   }, [salesData]);
 
@@ -118,7 +112,7 @@ export default function SalesPage() {
   };
 
   return (
-    <main className="main-content analytics-page">
+    <main className="main-content sales-page">
       <div className="welcome-header-container mb-2">
         <div className="dashboard-logo-large">
           <Image
@@ -142,102 +136,105 @@ export default function SalesPage() {
           </div>
       ) : (
         <>
-          <div className="metrics-grid">
-            <div className="card metric-card animate-fade-in">
-              <div className="metric-icon bg-primary-soft">
-                <i className="fas fa-money-bill-wave text-primary"></i>
+          <div className="stats-grid">
+            <div className="stat-card-modern">
+              <div className="stat-icon-modern">
+                <i className="fas fa-money-bill-wave"></i>
               </div>
-              <div className="metric-info">
-                <span className="label">Total Sales (Today)</span>
-                <h2 className="value">RM {salesData.totalSales.toFixed(2)}</h2>
-                <span className="trend positive"><i className="fas fa-arrow-up"></i> Live</span>
-              </div>
-            </div>
-
-            <div className="card metric-card animate-fade-in delay-1">
-              <div className="metric-icon bg-success-soft">
-                <i className="fas fa-shopping-cart text-success"></i>
-              </div>
-              <div className="metric-info">
-                <span className="label">Orders</span>
-                <h2 className="value">{salesData.orderCount}</h2>
-                <span className="trend positive"><i className="fas fa-arrow-up"></i> Live</span>
+              <div className="stat-content-modern">
+                <div className="stat-label-modern">Total Sales (Today)</div>
+                <div className="stat-value-modern">RM {salesData.totalSales.toFixed(2)}</div>
+                <div className="fs-xs text-primary mt-02"><i className="fas fa-arrow-up"></i> Live</div>
               </div>
             </div>
 
-            <div className="card metric-card animate-fade-in delay-2">
-              <div className="metric-icon bg-info-soft">
-                <i className="fas fa-receipt text-info"></i>
+            <div className="stat-card-modern">
+              <div className="stat-icon-modern">
+                <i className="fas fa-shopping-cart"></i>
               </div>
-              <div className="metric-info">
-                <span className="label">Avg Order Value</span>
-                <h2 className="value">RM {salesData.averageOrderValue.toFixed(2)}</h2>
-                <span className="trend">Stable</span>
+              <div className="stat-content-modern">
+                <div className="stat-label-modern">Orders</div>
+                <div className="stat-value-modern">{salesData.orderCount}</div>
+                <div className="fs-xs text-primary mt-02"><i className="fas fa-arrow-up"></i> Live</div>
+              </div>
+            </div>
+
+            <div className="stat-card-modern">
+              <div className="stat-icon-modern">
+                <i className="fas fa-receipt"></i>
+              </div>
+              <div className="stat-content-modern">
+                <div className="stat-label-modern">Avg Order Value</div>
+                <div className="stat-value-modern">RM {salesData.averageOrderValue.toFixed(2)}</div>
+                <div className="fs-xs text-muted mt-02">Stable</div>
               </div>
             </div>
           </div>
 
-          <div className="analytics-details-grid">
-            <div className="card payment-method-card mb-2">
-              <h3 className="card-title">Payment Breakdown</h3>
-              <div className="payment-list">
-                <div className="payment-item">
-                  <div className="item-label"><i className="fas fa-qrcode text-primary"></i> QR Payment</div>
-                  <div className="item-bar-container"><div ref={qrRef} className="item-bar"></div></div>
-                  <div className="item-value">RM {salesData.breakdown.qr.toFixed(2)}</div>
-                </div>
-                <div className="payment-item">
-                  <div className="item-label"><i className="fas fa-credit-card text-success"></i> Credit Card</div>
-                  <div className="item-bar-container"><div ref={creditRef} className="item-bar"></div></div>
-                  <div className="item-value">RM {salesData.breakdown.credit.toFixed(2)}</div>
-                </div>
-                <div className="payment-item">
-                  <div className="item-label"><i className="fas fa-id-card text-info"></i> Debit Card</div>
-                  <div className="item-bar-container"><div ref={debitRef} className="item-bar"></div></div>
-                  <div className="item-value">RM {salesData.breakdown.debit.toFixed(2)}</div>
-                </div>
-                <div className="payment-item border-none">
-                  <div className="item-label"><i className="fas fa-money-bill-wave text-warning"></i> Cash</div>
-                  <div className="item-bar-container"><div ref={cashRef} className="item-bar"></div></div>
-                  <div className="item-value">RM {salesData.breakdown.cash.toFixed(2)}</div>
-                </div>
-              </div>
-            </div>
-
-            <div className="card table-card">
-              <div className="flex-between flex-align-center mb-1">
+          <div className="grid-2-1 mt-2">
+            <div className="card">
+              <div className="flex-between flex-align-center mb-15">
                 <h3 className="card-title m-0">Recent Shift Summaries</h3>
                 <button className="btn-primary" onClick={() => setIsReceiptOpen(true)}>
                   <i className="fas fa-door-closed"></i> Close Shift
                 </button>
               </div>
-              <table className="data-table">
-                <thead>
-                  <tr>
-                    <th>Date / Shift</th>
-                    <th>Orders</th>
-                    <th>Revenue</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
+              <div className="modern-list">
+                <div className="list-header-modern">
+                  <div>Date / Shift</div>
+                  <div>Orders</div>
+                  <div className="text-right">Revenue</div>
+                </div>
+                <div className="list-body-modern">
                   {history.map((item, idx) => (
-                    <tr key={idx}>
-                      <td className="fw-semibold">{item.date}</td>
-                      <td>{item.orders}</td>
-                      <td>RM {item.revenue.toFixed(2)}</td>
-                      <td>
-                        <button className="btn-text" onClick={() => setSelectedIdx(idx)}>View Details</button>
-                      </td>
-                    </tr>
+                    <div key={idx} className="list-row-modern" onClick={() => setSelectedIdx(idx)}>
+                      <div className="fw-semibold">{item.date}</div>
+                      <div>{item.orders}</div>
+                      <div className="text-right fw-bold">RM {item.revenue.toFixed(2)}</div>
+                    </div>
                   ))}
                   {history.length === 0 && (
-                    <tr>
-                      <td colSpan={4} className="text-center py-2 text-muted">No shift history found.</td>
-                    </tr>
+                    <div className="p-3 text-center text-muted">No shift history found.</div>
                   )}
-                </tbody>
-              </table>
+                </div>
+              </div>
+            </div>
+
+            <div className="card">
+              <h3 className="mb-15">Payment Breakdown</h3>
+              <div className="payment-list">
+                <div className="payment-item mb-1">
+                  <div className="flex-between fs-sm mb-02">
+                    <span className="fw-semibold"><i className="fas fa-qrcode text-primary mr-05"></i> QR Payment</span>
+                    <span className="fw-bold">RM {salesData.breakdown.qr.toFixed(2)}</span>
+                  </div>
+                  <div className="item-bar-container"><div ref={qrRef} className="item-bar"></div></div>
+                </div>
+                
+                <div className="payment-item mb-1">
+                  <div className="flex-between fs-sm mb-02">
+                    <span className="fw-semibold"><i className="fas fa-credit-card text-success mr-05"></i> Credit Card</span>
+                    <span className="fw-bold">RM {salesData.breakdown.credit.toFixed(2)}</span>
+                  </div>
+                  <div className="item-bar-container"><div ref={creditRef} className="item-bar"></div></div>
+                </div>
+
+                <div className="payment-item mb-1">
+                  <div className="flex-between fs-sm mb-02">
+                    <span className="fw-semibold"><i className="fas fa-id-card text-info mr-05"></i> Debit Card</span>
+                    <span className="fw-bold">RM {salesData.breakdown.debit.toFixed(2)}</span>
+                  </div>
+                  <div className="item-bar-container"><div ref={debitRef} className="item-bar"></div></div>
+                </div>
+
+                <div className="payment-item">
+                  <div className="flex-between fs-sm mb-02">
+                    <span className="fw-semibold"><i className="fas fa-money-bill-wave text-warning mr-05"></i> Cash</span>
+                    <span className="fw-bold">RM {salesData.breakdown.cash.toFixed(2)}</span>
+                  </div>
+                  <div className="item-bar-container"><div ref={cashRef} className="item-bar"></div></div>
+                </div>
+              </div>
             </div>
           </div>
         </>
@@ -318,7 +315,7 @@ export default function SalesPage() {
                 <div className="receipt-divider mb-1"></div>
                 <p>End of Day Report</p>
                 <p>Thank you for your hard work!</p>
-                <p className="mt-05">*** PickBite POS ***</p>
+                <p className="mt-05">*** PickBite ***</p>
               </div>
             </div>
             <div className="modal-footer flex gap-1 mt-2">
